@@ -1,0 +1,41 @@
+# ==== NUNCA versionar segredos ====
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+token.json
+google_credentials.json
+
+# ==== NUNCA versionar dados de clientes/pedidos ====
+# Banco de dados local (contém nomes, telefones, pedidos reais)
+*.db
+*.sqlite
+*.sqlite3
+backend/data/
+
+# Exports de planilhas geradas (contêm dados reais de pedidos)
+relatorios/
+*.xlsx
+*.xls
+!docs/**/*.xlsx
+
+# Logs (podem conter números de telefone e mensagens de clientes)
+*.log
+logs/
+
+# ==== Python ====
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+*.egg-info/
+
+# ==== Node (se algum utilitário usar) ====
+node_modules/
+
+# ==== Sistema ====
+.DS_Store
+Thumbs.db
