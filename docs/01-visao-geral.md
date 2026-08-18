@@ -2,7 +2,7 @@
 
 ## Objetivo
 
-Automatizar 100% do atendimento de pedidos da loja de pipocas gourmet pelo
+Automatizar 100% do atendimento de pedidos da **Diadê Pipocas Gourmet** pelo
 WhatsApp, sem que ninguém da loja precise responder mensagens manualmente. A
 equipe da loja só interage com dois lugares:
 

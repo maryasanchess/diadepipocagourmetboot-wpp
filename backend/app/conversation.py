@@ -178,7 +178,7 @@ def _iniciar_pedido(estado: models.EstadoConversa) -> str:
     _ir_para(estado, "aguardando_sabor")
     _salvar_dados(estado, {"itens": []})
     return (
-        "Oi! Bem-vindo(a) à loja de pipocas gourmet \U0001f37f\n\n"
+        "Oi! Bem-vindo(a) à Diadê Pipocas Gourmet \U0001f37f\n\n"
         "Temos os seguintes sabores:\n"
         f"{_formatar_cardapio()}\n\n"
         "Me diz o número ou o nome do sabor que você quer "

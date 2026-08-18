@@ -2,7 +2,7 @@
 
 # 🍿 PipocaBot
 
-**Atendimento automático de pedidos via WhatsApp para uma loja de pipocas gourmet**
+**Atendimento automático de pedidos via WhatsApp para a Diadê Pipocas Gourmet**
 
 ![status](https://img.shields.io/badge/status-em%20desenvolvimento-C87F0A)
 ![python](https://img.shields.io/badge/backend-Python%20%2B%20FastAPI-3776AB)
@@ -119,5 +119,5 @@ PipocaBot_WhatsApp/
 ---
 
 <div align="center">
-<sub>Projeto privado — loja de pipocas gourmet. Não contém dados reais de clientes ou credenciais (ver <a href="docs/05-git-e-seguranca.md">docs/05-git-e-seguranca.md</a>).</sub>
+<sub>Projeto privado — Diadê Pipocas Gourmet. Não contém dados reais de clientes ou credenciais (ver <a href="docs/05-git-e-seguranca.md">docs/05-git-e-seguranca.md</a>).</sub>
 </div>
