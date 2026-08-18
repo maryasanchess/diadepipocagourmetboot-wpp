@@ -22,6 +22,20 @@ uvicorn app.main:app --reload --port 8000
 Teste no navegador: [http://localhost:8000](http://localhost:8000) deve
 responder `{"status": "PipocaBot rodando"}`.
 
+## Testar a conversa sem precisar do WhatsApp
+
+Não precisa de conta Meta nem de nada configurado — dá pra "conversar" com o
+bot direto no terminal:
+
+```powershell
+cd backend
+.venv\Scripts\Activate.ps1
+python chat_local.py
+```
+
+Digite as mensagens como se você fosse o cliente e vê a resposta do bot na
+hora. `/novo` simula um cliente diferente (do zero); `/sair` encerra.
+
 ## O que já existe
 - `GET /webhook` — verificação exigida pela Meta ao cadastrar a URL
 - `POST /webhook` — recebe mensagens do WhatsApp e conduz a conversa completa de pedido
