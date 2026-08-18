@@ -17,11 +17,12 @@ Você não precisa de nenhuma ferramenta paga para programar:
 
 > Vamos fazer essa etapa juntos quando você estiver pronto — eu te explico cada tela.
 
-## Etapa 2 — Google Cloud (para o Calendar)
+## Etapa 2 — Google Cloud (para Calendar e Sheets)
 1. Criar um projeto gratuito no [Google Cloud Console](https://console.cloud.google.com).
-2. Ativar a "Google Calendar API".
+2. Ativar a "Google Calendar API" **e** a "Google Sheets API" (mesmo projeto).
 3. Criar uma **conta de serviço** e baixar o arquivo de credenciais JSON.
 4. Compartilhar o Google Agenda da loja com o e-mail da conta de serviço (permissão de editor).
+5. Criar a planilha do cardápio (colunas: `sabor`, `tamanho_g`, `preco`, `disponivel`) e compartilhar com o e-mail da conta de serviço (permissão de leitor é suficiente, já que quem edita é a loja pelo navegador/celular, e o bot só lê).
 
 ## Etapa 3 — Esqueleto do backend (local)
 1. Criar ambiente virtual Python (`python -m venv .venv`) dentro de `backend/`.

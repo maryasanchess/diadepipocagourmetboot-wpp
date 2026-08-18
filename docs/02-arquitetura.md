@@ -11,6 +11,9 @@ WhatsApp Cloud API (Meta) ── webhook (HTTPS) ──▶ Backend (FastAPI, no 
       │ resposta via API                                ├──▶ Banco de dados (SQLite)
       └─────────────────────────────────────────────────┤        guarda pedidos, clientes, estado da conversa
                                                           │
+                                                          ├──▶ Google Sheets API (cardápio)
+                                                          │        loja edita sabores/tamanhos/preços direto na planilha
+                                                          │
                                                           ├──▶ Google Calendar API
                                                           │        cria evento de previsão de entrega
                                                           │
@@ -45,21 +48,29 @@ tranquilamente do volume de uma loja pequena/média. Tabelas principais:
 Se o volume crescer muito (centenas de pedidos simultâneos, múltiplos
 atendentes), migra-se para PostgreSQL sem mudar o resto da arquitetura.
 
-### 4. Integração com Google Agenda
+### 4. Cardápio administrável (Google Sheets)
+Sabores, tamanhos, preços e disponibilidade **não ficam fixos no código** —
+ficam numa Google Sheet que a própria loja edita. O backend lê essa planilha
+via Google Sheets API (mesma conta de serviço usada no Calendar) e mantém um
+cache curto em memória/banco para não bater na API a cada mensagem recebida.
+Se a leitura falhar (API fora do ar, planilha mal preenchida), o bot usa o
+último cardápio válido em cache em vez de quebrar a conversa.
+
+### 5. Integração com Google Agenda
 Ao confirmar um pedido, o backend chama a Google Calendar API e cria um
 evento com: data/hora de entrega prevista, nome do cliente, itens
 resumidos, endereço (se entrega). Usa uma **conta de serviço** do Google
 Cloud com acesso de "editor" a um calendário específico (não a agenda
 pessoal de ninguém).
 
-### 5. Gerador de planilha mensal
+### 6. Gerador de planilha mensal
 Um script/rotina que consulta o banco (`pedidos` + `itens_pedido`) filtrando
 por mês, agrupa por sabor + tamanho, e gera um `.xlsx`. Pode ser disparado:
 - manualmente (comando no terminal do VPS),
 - por um agendador (cron) rodando todo dia 1º,
 - ou por um comando especial que a própria loja manda no WhatsApp (ex: dono manda "relatório" e o bot responde com o arquivo) — desde que o número da loja seja identificado como "admin".
 
-### 6. Hospedagem (VPS)
+### 7. Hospedagem (VPS)
 O backend fica rodando continuamente num VPS com:
 - Python + FastAPI atrás de um servidor ASGI (uvicorn/gunicorn)
 - Um proxy reverso (nginx ou Caddy) cuidando do HTTPS (certificado via Let's Encrypt) — a Meta **exige** que o webhook seja HTTPS
