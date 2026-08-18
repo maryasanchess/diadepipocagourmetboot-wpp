@@ -44,20 +44,32 @@ Sabores disponíveis:
 | 🍓 Frutas Vermelhas |
 | 🍋 Torta de Limão |
 
-Tamanhos disponíveis (mesmo conjunto para todos os sabores): **50g, 80g,
-100g, 150g**.
+### Tamanhos e preços (confirmado, valor inicial)
+
+| Tamanho | Preço | Observação |
+|---|---|---|
+| 50g | — | **Não é vendido.** É um brinde dado sob encomenda, a critério da loja — não faz parte do fluxo de compra do bot por enquanto. |
+| 80g | R$ 12,00 | Mesmo preço para todos os sabores |
+| 100g | R$ 18,00 | **Kinder Bueno: R$ 22,00** |
+| 150g | R$ 25,00 | Mesmo preço para todos os sabores, incluindo Kinder Bueno |
+
+Esses valores estão fixos em `backend/app/cardapio.py` só para colocar o
+bot pra funcionar. A loja pode mudar qualquer preço a qualquer momento me
+avisando — e quando a Google Sheet administrável (abaixo) estiver pronta,
+a própria loja edita direto por lá, sem precisar de mim.
 
 ### Cardápio administrável pela própria loja (decisão de arquitetura)
 
-Os preços ainda não estão definidos, e a loja quer poder **cadastrar e
-atualizar sabores/tamanhos/preços sozinha, sem depender de mudança de
-código**. Decisão: o cardápio vai morar numa **Google Sheet** (planilha do
-Google, não arquivo local), no formato:
+A loja quer poder **cadastrar e atualizar sabores/tamanhos/preços
+sozinha, sem depender de mudança de código**. Decisão: o cardápio vai
+morar numa **Google Sheet** (planilha do Google, não arquivo local), no
+formato:
 
 | sabor | tamanho_g | preco | disponivel |
 |---|---|---|---|
-| Nutella | 50 | 12.00 | sim |
-| Nutella | 80 | 18.00 | sim |
+| Nutella | 80 | 12.00 | sim |
+| Nutella | 100 | 18.00 | sim |
+| Kinder Bueno | 100 | 22.00 | sim |
 | ... | ... | ... | ... |
 
 - A loja edita essa planilha direto (inclusive pelo celular, app do Google Sheets).
@@ -65,7 +77,9 @@ Google, não arquivo local), no formato:
 - Usa a mesma conta de serviço do Google que já vamos criar para o Calendar — só precisamos ativar também a **Google Sheets API** no mesmo projeto (ver `04-guia-de-inicio.md`).
 - Coluna `disponivel` permite a loja "pausar" um sabor/tamanho (ex: acabou o estoque) sem apagar a linha.
 
-> **Pendente:** você define os preços e me avisa quando quiser que eu monte o modelo real da planilha (posso criar um exemplo pronto para você preencher).
+> **Pendente:** confirmar se "por enquanto a loja só aceita por encomenda"
+> significa que o bot deve **exigir uma antecedência mínima** para pedidos
+> (ver seção "Prazo de antecedência" abaixo — hoje está sem trava nenhuma).
 
 ## Entrega e retirada (confirmado)
 - A loja faz **os dois**: entrega e retirada no local.

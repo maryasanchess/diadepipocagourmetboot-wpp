@@ -1,11 +1,16 @@
 """
 Cardápio da loja.
 
-Os preços abaixo são FICTÍCIOS (placeholder) porque a loja ainda não
-definiu os valores reais (ver docs/01-visao-geral.md). Quando a
-integração com a Google Sheet administrável for implementada (ver
-docs/02-arquitetura.md), só esta função muda — o resto do código depende
-apenas do formato de dicionário retornado aqui, não de como ele é obtido.
+Preços definidos pela loja para começar o desenvolvimento (não é mais
+fictício, mas ainda é um valor fixo no código). Quando a integração com a
+Google Sheet administrável for implementada (ver docs/02-arquitetura.md), só
+este arquivo muda — o resto do código depende apenas do formato de
+dicionário retornado por `obter_cardapio()`, não de como ele é obtido.
+
+O tamanho 50g NÃO está no cardápio vendável: segundo a loja, é um brinde
+dado sob encomenda, não um item que o cliente escolhe e paga. Se isso virar
+uma funcionalidade do bot (ex: "quer levar um brinde de 50g?"), entra depois
+como um fluxo separado.
 """
 
 SABORES = [
@@ -17,21 +22,28 @@ SABORES = [
     "Torta de Limão",
 ]
 
-PRECO_FICTICIO_POR_TAMANHO = {
-    50: 10.00,
-    80: 15.00,
+TAMANHOS_G = [80, 100, 150]
+
+PRECO_BASE_POR_TAMANHO = {
+    80: 12.00,
     100: 18.00,
     150: 25.00,
+}
+
+# Exceções de preço por (sabor, tamanho_g) — sobrescreve o preço base.
+EXCECOES_PRECO = {
+    ("Kinder Bueno", 100): 22.00,
 }
 
 
 def obter_cardapio() -> list[dict]:
     """Lista de itens: sabor, tamanho_g, preco, disponivel."""
-    return [
-        {"sabor": sabor, "tamanho_g": tamanho, "preco": preco, "disponivel": True}
-        for sabor in SABORES
-        for tamanho, preco in PRECO_FICTICIO_POR_TAMANHO.items()
-    ]
+    itens = []
+    for sabor in SABORES:
+        for tamanho in TAMANHOS_G:
+            preco = EXCECOES_PRECO.get((sabor, tamanho), PRECO_BASE_POR_TAMANHO[tamanho])
+            itens.append({"sabor": sabor, "tamanho_g": tamanho, "preco": preco, "disponivel": True})
+    return itens
 
 
 def sabores_disponiveis() -> list[str]:
