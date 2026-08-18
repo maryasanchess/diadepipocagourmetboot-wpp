@@ -26,6 +26,17 @@ PALAVRAS_CANCELAR = {"cancelar", "cancela", "cancelar pedido"}
 PALAVRAS_SIM = {"sim", "s", "quero", "confirmar", "confirmo"}
 PALAVRAS_NAO = {"não", "nao", "n"}
 
+# Mensagens de agradecimento/despedida logo após um pedido: respondem com um
+# "de nada" em vez de reabrir o cardápio inteiro (achado em teste real —
+# ver docs/08-registro-de-testes.md). Emojis ficam à parte porque a
+# normalização de acentos (_normalizar) os remove.
+PALAVRAS_AGRADECIMENTO = {
+    "ok", "okay", "blz", "beleza", "obrigado", "obrigada", "obg",
+    "valeu", "vlw", "de nada",
+}
+EMOJIS_AGRADECIMENTO = {"\U0001f44d", "\U0001f64f"}  # 👍 🙏
+MENSAGEM_AGRADECIMENTO = "Por nada! Qualquer coisa, é só me chamar por aqui. \U0001f37f"
+
 _SEPARADOR_MULTIPLOS_SABORES = re.compile(r"\s*(?:,| e |\+|/)\s*", re.IGNORECASE)
 
 
@@ -396,6 +407,14 @@ def processar_mensagem(db: Session, telefone: str, texto: str) -> str:
         return _tratar_cancelamento(db, cliente, estado)
 
     etapa = estado.etapa_atual
+    texto_stripped = texto.strip()
+
+    if etapa == "inicio" and (
+        _normalizar(texto_stripped) in PALAVRAS_AGRADECIMENTO
+        or texto_stripped in EMOJIS_AGRADECIMENTO
+    ):
+        return MENSAGEM_AGRADECIMENTO
+
     avisar_horario = etapa == "inicio"
 
     if etapa == "inicio":

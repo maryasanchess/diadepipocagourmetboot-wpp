@@ -68,6 +68,36 @@ prevista salva).
 
 ---
 
+## Teste 2 — 2026-08-18: pedido completo até o fim + mensagem depois de confirmado
+
+**Quem testou:** a loja, pelo `chat_local.py`, logo depois das correções do Teste 1.
+
+**O que foi testado:** pedido com Doritos, retirada, confirmação — e o
+que acontece se o cliente mandar mais uma mensagem depois.
+
+### 🐛 Bug 3 — "ok" depois do pedido reabria o cardápio inteiro
+Depois do bot confirmar o pedido (`Pedido #1 confirmado!...`), a loja
+digitou `ok` só pra encerrar a conversa educadamente — e o bot respondeu
+com a saudação completa de novo, mostrando todo o cardápio, como se
+fosse um cliente novo começando um pedido.
+
+**Causa:** qualquer mensagem recebida com a conversa no estado inicial
+(`inicio`) disparava o início de um novo pedido, sem distinguir "quero
+pedir algo" de uma resposta de encerramento tipo "ok"/"obrigada"/"blz".
+
+**Correção:** mensagens curtas de agradecimento/encerramento (`ok`,
+`blz`, `beleza`, `obrigado(a)`, `valeu`, `vlw`, `de nada`, 👍, 🙏)
+recebidas logo após o fim de uma conversa agora recebem só um "por nada"
+educado, sem reabrir o cardápio. Uma mensagem de verdade (`oi`, nome de
+sabor, etc.) continua abrindo um pedido novo normalmente.
+
+### ✅ Resultado final do teste
+Fluxo completo (1 sabor, retirada, data no formato sem "h", confirmação)
+rodou sem erro. Depois de confirmado, `ok` respondeu com agradecimento;
+`oi` logo em seguida abriu um pedido novo corretamente.
+
+---
+
 ## Como ler este registro no futuro
 Cada teste novo que encontrar um problema real deve virar uma entrada
 aqui: o que foi testado, o que quebrou, por que quebrou, e o que foi
