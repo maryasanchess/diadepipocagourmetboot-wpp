@@ -36,9 +36,12 @@ vendidas por sabor/tamanho.
 ## Status atual
 
 - [x] Estrutura do projeto e documentação inicial
+- [x] Esqueleto do backend rodando localmente (webhook, banco, horário de atendimento, checagem de admin)
 - [ ] Conta Meta Business + WhatsApp Cloud API configurada
-- [ ] Webhook recebendo mensagens
-- [ ] Fluxo de conversa (cardápio → pedido → confirmação)
+- [ ] Webhook testado recebendo mensagens reais (via túnel/deploy)
+- [ ] Cardápio lido da Google Sheet
+- [ ] Fluxo de conversa completo (cardápio → tamanho → quantidade → entrega → pagamento → confirmação)
+- [ ] Cancelamento/alteração de pedido pelo bot
 - [ ] Integração com Google Agenda
-- [ ] Geração de planilha mensal
+- [ ] Geração de planilha mensal (comando admin `relatorio`)
 - [ ] Deploy no VPS
