@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     horario_abertura: str = "08:00"
     horario_fechamento: str = "21:00"
     pix_chave: str = "chave-pix-a-definir@loja.com"
+    antecedencia_minima_horas: int = 24
 
     app_secret_key: str = ""
 

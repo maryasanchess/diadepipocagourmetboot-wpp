@@ -1,8 +1,10 @@
 import json
+from datetime import datetime
 
 from sqlalchemy.orm import Session
 
 from . import models
+from .agendamento import antecedencia_suficiente, interpretar_data_hora
 from .cardapio import sabores_disponiveis, tamanhos_disponiveis
 from .config import settings
 from .horario import dentro_do_horario_de_atendimento
@@ -11,6 +13,11 @@ MENSAGEM_FORA_DO_HORARIO = (
     "No momento estamos fora do horário de atendimento "
     f"({settings.horario_abertura} às {settings.horario_fechamento}). "
     "Você pode montar o pedido, mas ele só é processado dentro desse horário."
+)
+
+PEDIDO_DATA_HORA = (
+    "Pode ser 'hoje', 'amanhã' ou uma data (ex: 25/12), sempre junto com o "
+    "horário (ex: 'amanhã às 15h')."
 )
 
 PALAVRAS_CANCELAR = {"cancelar", "cancela", "cancelar pedido"}
@@ -209,7 +216,7 @@ def _escolher_tipo_entrega(estado: models.EstadoConversa, texto: str) -> str:
         dados["tipo_entrega"] = "retirada"
         _salvar_dados(estado, dados)
         _ir_para(estado, "aguardando_data_hora")
-        return "Combinado, retirada na loja. Pra quando você gostaria de retirar (data e horário)?"
+        return f"Combinado, retirada na loja. Pra quando você gostaria de retirar? {PEDIDO_DATA_HORA}"
     return "Não entendi. Responde 'entrega' ou 'retirada'."
 
 
@@ -218,12 +225,24 @@ def _informar_endereco(estado: models.EstadoConversa, texto: str) -> str:
     dados["endereco"] = texto.strip()
     _salvar_dados(estado, dados)
     _ir_para(estado, "aguardando_data_hora")
-    return "Anotado! Pra quando você gostaria da entrega (data e horário)?"
+    return f"Anotado! Pra quando você gostaria da entrega? {PEDIDO_DATA_HORA}"
 
 
 def _informar_data_hora(estado: models.EstadoConversa, texto: str) -> str:
+    data_hora = interpretar_data_hora(texto)
+    if data_hora is None:
+        return f"Não entendi essa data/horário. {PEDIDO_DATA_HORA}"
+
+    if not antecedencia_suficiente(data_hora):
+        return (
+            f"A loja trabalha por encomenda e precisa de pelo menos "
+            f"{settings.antecedencia_minima_horas}h de antecedência. "
+            f"Escolhe uma data/horário mais à frente. {PEDIDO_DATA_HORA}"
+        )
+
     dados = _carregar_dados(estado)
     dados["data_hora_texto"] = texto.strip()
+    dados["data_hora_iso"] = data_hora.isoformat()
     _salvar_dados(estado, dados)
     _ir_para(estado, "aguardando_confirmacao_final")
     return (
@@ -251,11 +270,16 @@ def _confirmar_pedido(db: Session, cliente: models.Cliente, estado: models.Estad
 
 
 def _criar_pedido(db: Session, cliente: models.Cliente, dados: dict) -> models.Pedido:
+    data_hora_prevista = None
+    if dados.get("data_hora_iso"):
+        data_hora_prevista = datetime.fromisoformat(dados["data_hora_iso"])
+
     pedido = models.Pedido(
         cliente_id=cliente.id,
         tipo_entrega=dados["tipo_entrega"],
         endereco=dados.get("endereco"),
         taxa_entrega=None,
+        data_hora_prevista=data_hora_prevista,
         status=models.StatusPedido.recebido,
     )
     for item in dados.get("itens", []):

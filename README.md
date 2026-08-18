@@ -103,8 +103,9 @@ PipocaBot_WhatsApp/
 - [x] Estrutura do projeto e documentação inicial
 - [x] Repositório salvo com segurança no GitHub (privado)
 - [x] Esqueleto do backend rodando localmente (webhook, banco, horário de atendimento, checagem de admin)
-- [x] Fluxo de conversa completo (cardápio → tamanho → quantidade → entrega → pagamento → confirmação), testado de ponta a ponta com preços fictícios
+- [x] Fluxo de conversa completo (cardápio → tamanho → quantidade → entrega → pagamento → confirmação), testado de ponta a ponta com preços reais
 - [x] Cancelamento de pedido pelo bot (em andamento ou já confirmado)
+- [x] Antecedência mínima de 24h para pedidos (loja trabalha por encomenda)
 - [x] Chat de terminal para testar sem depender do WhatsApp (`chat_local.py`)
 - [x] Preços reais definidos pela loja (fixos no código por enquanto, ver `docs/01-visao-geral.md`)
 - [ ] Cardápio lido da Google Sheet (hoje os preços estão fixos em `backend/app/cardapio.py`)

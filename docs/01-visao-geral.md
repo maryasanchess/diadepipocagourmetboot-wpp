@@ -77,18 +77,28 @@ formato:
 - Usa a mesma conta de serviço do Google que já vamos criar para o Calendar — só precisamos ativar também a **Google Sheets API** no mesmo projeto (ver `04-guia-de-inicio.md`).
 - Coluna `disponivel` permite a loja "pausar" um sabor/tamanho (ex: acabou o estoque) sem apagar a linha.
 
-> **Pendente:** confirmar se "por enquanto a loja só aceita por encomenda"
-> significa que o bot deve **exigir uma antecedência mínima** para pedidos
-> (ver seção "Prazo de antecedência" abaixo — hoje está sem trava nenhuma).
-
 ## Entrega e retirada (confirmado)
 - A loja faz **os dois**: entrega e retirada no local.
 - Tem **taxa de entrega**, mas a regra ainda está em definição — combinamos esperar. Até lá, o bot pergunta o endereço normalmente e registra a taxa como **"a confirmar"** no pedido; a loja informa o valor manualmente ao cliente por fora do bot. Quando a regra existir (fixo, por bairro, por km), plugamos no fluxo sem precisar redesenhar o resto.
 
-## Prazo de antecedência (confirmado)
-**Sem trava no MVP** — o bot aceita pedido para qualquer horário/data que o
-cliente escolher. Se na prática isso gerar problema (pedido de última hora
-inviável), adicionamos uma regra depois com base em casos reais.
+## Prazo de antecedência (confirmado — revisado)
+A loja trabalha **por encomenda**, então o bot exige **pelo menos 24h de
+antecedência** entre o pedido e a data/horário de entrega ou retirada
+(configurável em `ANTECEDENCIA_MINIMA_HORAS` no `.env`, caso mude no
+futuro). Se o cliente pedir uma data/horário mais próximo que isso, o bot
+explica a regra e pede uma data mais à frente, sem travar a conversa.
+
+O bot entende os formatos: `hoje`, `amanhã`, uma data explícita (`25/12`
+ou `25/12/2026`) — sempre junto com um horário (`15h`, `15h30` ou
+`15:30`). Se não conseguir entender o texto, pede pra reformular com um
+exemplo.
+
+> Decisão técnica: testamos usar uma biblioteca de interpretação de datas
+> em linguagem natural (`dateparser`) e ela deu resultado **errado** em
+> casos simples durante o teste. Como essa regra afeta pedido real e,
+> depois, o evento no Google Agenda, optamos por um parser simples e
+> totalmente previsível (`backend/app/agendamento.py`) em vez de uma
+> lib "mágica" que pode falhar sem avisar.
 
 ## Pagamento (confirmado)
 - Só **Pix**, "de qualquer forma" — ou seja, o bot não precisa validar tipo de chave nem gerar cobrança automática por enquanto. Ele informa a chave Pix da loja (ou manda um texto/QR fixo) e o cliente paga por fora do bot. Confirmação de pagamento pode ficar manual (loja confere o Pix recebido) neste primeiro momento.

@@ -41,14 +41,14 @@ hora. `/novo` simula um cliente diferente (do zero); `/sair` encerra.
 - `POST /webhook` — recebe mensagens do WhatsApp e conduz a conversa completa de pedido
 - **Fluxo de pedido completo** (`app/conversation.py`): cardápio → sabor → tamanho → quantidade → repetir para mais itens → entrega/retirada → endereço → data/horário → resumo com chave Pix → confirmação → pedido salvo no banco
 - Cliente pode digitar `cancelar` a qualquer momento (cancela o pedido em andamento, ou o último pedido já confirmado, se ainda estiver em status que permite)
-- Cardápio em `app/cardapio.py` — **preços fictícios por enquanto** (a loja ainda não definiu os valores reais; quando a Google Sheet do cardápio existir, só esse arquivo muda)
+- Cardápio em `app/cardapio.py` — preços reais definidos pela loja, fixos no código por enquanto (quando a Google Sheet do cardápio existir, só esse arquivo muda)
+- **Antecedência mínima de 24h** (`app/agendamento.py`) — a loja trabalha por encomenda, então o bot exige pelo menos `ANTECEDENCIA_MINIMA_HORAS` (`.env`) entre o pedido e a entrega/retirada. Entende `hoje`, `amanhã` e datas explícitas (`25/12`) sempre com horário (`15h`, `15h30`) — parser feito à mão de propósito, não usa lib de NLP de datas (ver `docs/01-visao-geral.md`)
 - Banco SQLite criado automaticamente em `data/pipoca.db` na primeira execução
 - Checagem de horário de atendimento (8h–21h, configurável no `.env`)
 - Checagem de número admin (`ADMIN_PHONE_NUMBER` no `.env`) com comando `relatorio` (ainda um placeholder)
 
 ## Próximos passos (ver docs/04-guia-de-inicio.md)
 - Testar o webhook publicamente com um túnel temporário (ex: ngrok) durante o desenvolvimento
-- Trocar os preços fictícios pelos preços reais da loja
 - Ler o cardápio da Google Sheet (em vez do placeholder em `app/cardapio.py`)
-- Criar evento no Google Agenda ao confirmar pedido
+- Criar evento no Google Agenda ao confirmar pedido (já temos `data_hora_prevista` salva no pedido)
 - Gerar a planilha mensal sob o comando `relatorio`
