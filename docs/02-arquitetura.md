@@ -41,7 +41,7 @@ salvo no banco (não em memória), para sobreviver a reinícios do servidor.
 SQLite para começar — é um único arquivo, fácil de fazer backup, e dá conta
 tranquilamente do volume de uma loja pequena/média. Tabelas principais:
 - `clientes` (telefone, nome)
-- `pedidos` (cliente, itens, endereço/retirada, data de entrega, status)
+- `pedidos` (cliente, itens, endereço/retirada, data de entrega, `status`: `recebido` → `confirmado` → `em_preparo` → `em_entrega`/`pronto_retirada` → `concluido`, ou `cancelado`)
 - `itens_pedido` (pedido, sabor, tamanho, quantidade, preço)
 - `estado_conversa` (telefone, etapa_atual, dados_temporarios)
 
@@ -65,12 +65,24 @@ pessoal de ninguém).
 
 ### 6. Gerador de planilha mensal
 Um script/rotina que consulta o banco (`pedidos` + `itens_pedido`) filtrando
-por mês, agrupa por sabor + tamanho, e gera um `.xlsx`. Pode ser disparado:
-- manualmente (comando no terminal do VPS),
-- por um agendador (cron) rodando todo dia 1º,
-- ou por um comando especial que a própria loja manda no WhatsApp (ex: dono manda "relatório" e o bot responde com o arquivo) — desde que o número da loja seja identificado como "admin".
+por mês, agrupa por sabor + tamanho, e gera um `.xlsx`. É disparado pelo
+**comando de admin** (`relatorio`, ver item 8), e futuramente também pode
+rodar sozinho todo dia 1º via agendador (cron).
 
-### 7. Hospedagem (VPS)
+### 7. Controle de admin
+O número de telefone da loja fica configurado em `.env`
+(`ADMIN_PHONE_NUMBER`). Toda mensagem recebida passa por uma checagem: se o
+remetente é o número admin, ela pode acionar comandos especiais
+(`relatorio`, etc.); qualquer outro número só tem acesso ao fluxo normal de
+pedido. Essa checagem é simples (comparação de string), sem necessidade de
+login/senha.
+
+### 8. Horário de atendimento
+Antes de avançar o fluxo de pedido, o backend verifica se o horário atual
+(fuso da loja) está entre **8h e 21h**. Fora disso, o bot ainda responde,
+mas avisa que pedidos são processados dentro do horário de atendimento.
+
+### 9. Hospedagem (VPS)
 O backend fica rodando continuamente num VPS com:
 - Python + FastAPI atrás de um servidor ASGI (uvicorn/gunicorn)
 - Um proxy reverso (nginx ou Caddy) cuidando do HTTPS (certificado via Let's Encrypt) — a Meta **exige** que o webhook seja HTTPS

@@ -79,11 +79,36 @@ inviável), adicionamos uma regra depois com base em casos reais.
 ## Pagamento (confirmado)
 - Só **Pix**, "de qualquer forma" — ou seja, o bot não precisa validar tipo de chave nem gerar cobrança automática por enquanto. Ele informa a chave Pix da loja (ou manda um texto/QR fixo) e o cliente paga por fora do bot. Confirmação de pagamento pode ficar manual (loja confere o Pix recebido) neste primeiro momento.
 
+## Cancelar/alterar pedido (confirmado)
+O cliente **pode cancelar ou alterar** um pedido pelo próprio bot — mas só
+enquanto o pedido ainda estiver num estado que permita mudança (ex: ainda
+não saiu para produção/entrega). Regra inicial simples: permitir
+cancelamento/alteração enquanto o status do pedido for `recebido` ou
+`confirmado`; depois que a loja marcar como `em preparo` ou `em entrega`, o
+bot informa que não pode mais alterar sozinho e orienta a falar com a loja.
+(Esse controle de status é manual por enquanto — ver "Comando de admin"
+abaixo.)
+
+## Horário de atendimento (confirmado)
+O bot só aceita pedidos **das 8h às 21h**. Fora desse horário:
+- o bot continua respondendo (pode tirar dúvida, mostrar cardápio),
+- mas avisa que pedidos só são processados dentro do horário de atendimento e sugere o cliente confirmar dentro da janela (ou enfileira o pedido para confirmação assim que abrir, a definir qual comportamento é melhor na prática).
+
+## Comando de admin (confirmado)
+A loja terá um **número de telefone cadastrado como admin** (definido em
+configuração, não em código — vai para o `.env`, nunca commitado). Só
+mensagens vindas desse número específico têm acesso aos comandos
+administrativos, por exemplo:
+- `relatorio` → bot gera e envia a planilha do mês atual
+- (futuro) `pausar <sabor>` → marca um item como indisponível sem precisar abrir a Google Sheet
+
+Qualquer tentativa de usar um comando admin vindo de outro número é
+ignorada/rejeitada — o bot trata como mensagem normal de cliente.
+
 ### Ainda em aberto
 - Preços de cada sabor+tamanho na planilha do cardápio
 - Regra e valor da taxa de entrega
-- Se o cliente pode cancelar/alterar pedido pelo próprio bot
-- Horário de atendimento do bot (24h ou dentro de uma janela, ex: 9h–20h)
+- Comportamento exato do bot fora do horário 8h–21h (só avisa, ou enfileira o pedido?)
 
 ## Fora de escopo (por enquanto)
 - Atendimento humano assumindo a conversa (pode ser adicionado depois com "handoff").
