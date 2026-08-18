@@ -77,16 +77,38 @@ Backend (FastAPI)  ──▶  Cardápio (Google Sheet, editado pela loja)
 | Banco de dados | SQLite (início) → PostgreSQL se o volume crescer |
 | Hospedagem | VPS (provedor a definir, ver `docs/03-custos.md`) |
 
+## 🗂️ Estrutura do projeto
+
+```
+PipocaBot_WhatsApp/
+├── README.md                        este arquivo
+├── .env.example                     modelo de configuração (o .env real nunca é commitado)
+├── docs/                            documentação completa, um tema por arquivo
+├── Resumo-Projeto-PipocaBot.docx    resumo não técnico do projeto
+└── backend/
+    ├── app/
+    │   ├── main.py                  app FastAPI
+    │   ├── webhook.py               endpoints que recebem o WhatsApp
+    │   ├── conversation.py          fluxo de pedido (a "inteligência" do bot)
+    │   ├── cardapio.py              sabores/tamanhos/preços (fictícios por enquanto)
+    │   ├── models.py                tabelas do banco de dados
+    │   └── ...
+    ├── chat_local.py                testa o bot no terminal, sem WhatsApp
+    ├── data/                        banco SQLite local (gitignored)
+    └── credentials/                 credenciais do Google (gitignored)
+```
+
 ## ✅ Status atual
 
 - [x] Estrutura do projeto e documentação inicial
-- [x] Esqueleto do backend rodando localmente (webhook, banco, horário de atendimento, checagem de admin)
 - [x] Repositório salvo com segurança no GitHub (privado)
-- [ ] Conta Meta Business + WhatsApp Cloud API configurada
-- [ ] Webhook testado recebendo mensagens reais (via túnel/deploy)
+- [x] Esqueleto do backend rodando localmente (webhook, banco, horário de atendimento, checagem de admin)
 - [x] Fluxo de conversa completo (cardápio → tamanho → quantidade → entrega → pagamento → confirmação), testado de ponta a ponta com preços fictícios
 - [x] Cancelamento de pedido pelo bot (em andamento ou já confirmado)
+- [x] Chat de terminal para testar sem depender do WhatsApp (`chat_local.py`)
 - [ ] Cardápio lido da Google Sheet (hoje usa preços fictícios)
+- [ ] Conta Meta Business + WhatsApp Cloud API configurada
+- [ ] Webhook testado recebendo mensagens reais (via túnel/deploy)
 - [ ] Integração com Google Agenda
 - [ ] Geração de planilha mensal (comando admin `relatorio`)
 - [ ] Deploy no VPS
