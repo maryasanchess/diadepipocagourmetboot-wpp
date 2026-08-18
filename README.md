@@ -23,6 +23,7 @@ vendidas por sabor/tamanho.
 - [docs/03-custos.md](docs/03-custos.md) — tudo que tem custo mensal ou único
 - [docs/04-guia-de-inicio.md](docs/04-guia-de-inicio.md) — passo a passo para sair do zero até o primeiro deploy
 - [docs/05-git-e-seguranca.md](docs/05-git-e-seguranca.md) — o que pode ir pro Git e o que nunca pode
+- [docs/06-sincronizar-dois-computadores.md](docs/06-sincronizar-dois-computadores.md) — como trabalhar do notebook da empresa e de casa sem perder nada
 
 ## Stack escolhida
 
