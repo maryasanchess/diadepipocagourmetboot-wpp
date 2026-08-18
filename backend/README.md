@@ -40,9 +40,11 @@ hora. `/novo` simula um cliente diferente (do zero); `/sair` encerra.
 - `GET /webhook` — verificação exigida pela Meta ao cadastrar a URL
 - `POST /webhook` — recebe mensagens do WhatsApp e conduz a conversa completa de pedido
 - **Fluxo de pedido completo** (`app/conversation.py`): cardápio → sabor → tamanho → quantidade → repetir para mais itens → entrega/retirada → endereço → data/horário → resumo com chave Pix → confirmação → pedido salvo no banco
+- Cliente pode escolher **mais de um sabor numa mensagem só** (ex: "Nutella e Torta de Limão") — o bot pergunta tamanho e quantidade de cada um em sequência
+- Reconhecimento de sabor **ignora acentos** (ex: "limao" reconhece "Limão") — achado em teste real, ver `docs/08-registro-de-testes.md`
 - Cliente pode digitar `cancelar` a qualquer momento (cancela o pedido em andamento, ou o último pedido já confirmado, se ainda estiver em status que permite)
 - Cardápio em `app/cardapio.py` — preços reais definidos pela loja, fixos no código por enquanto (quando a Google Sheet do cardápio existir, só esse arquivo muda)
-- **Antecedência mínima de 24h** (`app/agendamento.py`) — a loja trabalha por encomenda, então o bot exige pelo menos `ANTECEDENCIA_MINIMA_HORAS` (`.env`) entre o pedido e a entrega/retirada. Entende `hoje`, `amanhã` e datas explícitas (`25/12`) sempre com horário (`15h`, `15h30`) — parser feito à mão de propósito, não usa lib de NLP de datas (ver `docs/01-visao-geral.md`)
+- **Antecedência mínima de 24h** (`app/agendamento.py`) — a loja trabalha por encomenda, então o bot exige pelo menos `ANTECEDENCIA_MINIMA_HORAS` (`.env`) entre o pedido e a entrega/retirada. Entende `hoje`, `amanhã` e datas explícitas (`25/12`) sempre com horário, com ou sem "h"/":" (`15h`, `15h30`, `20`) — parser feito à mão de propósito, não usa lib de NLP de datas (ver `docs/01-visao-geral.md`)
 - Banco SQLite criado automaticamente em `data/pipoca.db` na primeira execução
 - Checagem de horário de atendimento (8h–21h, configurável no `.env`)
 - Checagem de número admin (`ADMIN_PHONE_NUMBER` no `.env`) com comando `relatorio` (ainda um placeholder)

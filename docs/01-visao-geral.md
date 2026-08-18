@@ -18,18 +18,18 @@ equipe da loja só interage com dois lugares:
 | Loja | Vê quanto vendeu de cada sabor/tamanho no mês | Planilha `.xlsx` |
 | Loja (opcional) | Aciona geração da planilha por comando ou recebe automaticamente todo mês | WhatsApp ou e-mail |
 
-## Fluxo de conversa (rascunho — vamos refinar juntos)
+## Fluxo de conversa (implementado e testado — ver `docs/08-registro-de-testes.md`)
 
-1. **Saudação** — cliente manda "oi"/qualquer mensagem → bot se apresenta e mostra o cardápio (sabores + tamanhos + preços).
-2. **Escolha do sabor** — bot lista opções, cliente escolhe (texto livre ou botões de lista da Cloud API).
-3. **Escolha do tamanho** — P / M / G, com preço de cada um.
-4. **Quantidade** — quantas unidades desse sabor/tamanho.
-5. **Mais alguma coisa?** — permite adicionar outro sabor ao mesmo pedido, repetindo passos 2–4.
-6. **Entrega ou retirada** — pergunta endereço (se entrega) ou confirma retirada na loja.
-7. **Data/horário desejado** — cliente informa quando quer receber; bot valida contra horários que a loja aceita (a definir).
-8. **Forma de pagamento** — Pix, cartão, dinheiro (a definir quais a loja aceita via bot; pagamento em si pode continuar sendo tratado fora do bot, ex: chave Pix enviada como texto).
-9. **Resumo e confirmação** — bot mostra o pedido completo e pede confirmação final.
-10. **Fechamento** — bot salva o pedido, cria o evento no Google Agenda, envia mensagem de confirmação ao cliente com o número do pedido.
+1. **Saudação** — cliente manda "oi"/qualquer mensagem → bot se apresenta e mostra o cardápio (sabores).
+2. **Escolha do sabor** — bot lista opções numeradas; cliente escolhe pelo número, pelo nome (com ou sem acento), ou **mais de um de uma vez** (ex: "Nutella e Torta de Limão").
+3. **Escolha do tamanho** — 80g / 100g / 150g, com preço de cada um (50g é brinde, não aparece aqui).
+4. **Quantidade** — quantas unidades desse sabor/tamanho. Se o cliente escolheu vários sabores no passo 2, o bot repete os passos 3–4 pra cada um automaticamente, sem precisar confirmar entre eles.
+5. **Mais alguma coisa?** — só aparece depois que a fila de sabores escolhidos termina; permite adicionar mais sabores, repetindo os passos 2–4.
+6. **Entrega ou retirada** — lista numerada (1. Entrega / 2. Retirada); pergunta endereço se for entrega.
+7. **Data/horário desejado** — cliente informa quando quer receber; bot exige pelo menos 24h de antecedência (loja trabalha por encomenda) e reformula o pedido se a data não for entendida ou for muito próxima.
+8. **Forma de pagamento** — só Pix; bot informa a chave da loja no resumo do pedido.
+9. **Resumo e confirmação** — bot mostra o pedido completo (itens, total, entrega/retirada, data/horário, chave Pix) e pede confirmação final.
+10. **Fechamento** — bot salva o pedido no banco com a data/horário validada. *(Ainda falta: criar o evento no Google Agenda — pendente da conta Google configurada.)*
 
 ## Cardápio (confirmado)
 

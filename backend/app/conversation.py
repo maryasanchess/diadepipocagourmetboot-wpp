@@ -1,4 +1,6 @@
 import json
+import re
+import unicodedata
 from datetime import datetime
 
 from sqlalchemy.orm import Session
@@ -23,6 +25,8 @@ PEDIDO_DATA_HORA = (
 PALAVRAS_CANCELAR = {"cancelar", "cancela", "cancelar pedido"}
 PALAVRAS_SIM = {"sim", "s", "quero", "confirmar", "confirmo"}
 PALAVRAS_NAO = {"não", "nao", "n"}
+
+_SEPARADOR_MULTIPLOS_SABORES = re.compile(r"\s*(?:,| e |\+|/)\s*", re.IGNORECASE)
 
 
 # ---- estado / persistência auxiliares -------------------------------------
@@ -101,16 +105,40 @@ def _resumo_pedido(dados: dict) -> str:
 
 # ---- interpretação de respostas do cliente ----------------------------------
 
+def _normalizar(texto: str) -> str:
+    """minúsculas e sem acento, pra aceitar 'limao' como 'Limão' etc."""
+    sem_acento = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode("ascii")
+    return sem_acento.strip().lower()
+
+
 def _resolver_sabor(texto: str, opcoes: list[str]) -> str | None:
     texto = texto.strip()
     if texto.isdigit():
         indice = int(texto) - 1
         return opcoes[indice] if 0 <= indice < len(opcoes) else None
-    texto_lower = texto.lower()
+    texto_norm = _normalizar(texto)
     for opcao in opcoes:
-        if opcao.lower() == texto_lower or texto_lower in opcao.lower():
+        opcao_norm = _normalizar(opcao)
+        if opcao_norm == texto_norm or texto_norm in opcao_norm:
             return opcao
     return None
+
+
+def _resolver_multiplos_sabores(texto: str, opcoes: list[str]) -> list[str] | None:
+    """Se o texto tiver 2+ sabores válidos separados por vírgula/'e'/'+'/'/',
+    retorna a lista resolvida. Caso contrário (inclusive um único sabor),
+    retorna None e quem chamou trata como escolha simples."""
+    partes = [p for p in _SEPARADOR_MULTIPLOS_SABORES.split(texto) if p.strip()]
+    if len(partes) < 2:
+        return None
+
+    resolvidos = []
+    for parte in partes:
+        sabor = _resolver_sabor(parte, opcoes)
+        if sabor is None:
+            return None
+        resolvidos.append(sabor)
+    return resolvidos
 
 
 def _resolver_tamanho(texto: str, itens: list[dict]) -> dict | None:
@@ -142,17 +170,31 @@ def _iniciar_pedido(estado: models.EstadoConversa) -> str:
         "Oi! Bem-vindo(a) à loja de pipocas gourmet \U0001f37f\n\n"
         "Temos os seguintes sabores:\n"
         f"{_formatar_cardapio()}\n\n"
-        "Me diz o número ou o nome do sabor que você quer."
+        "Me diz o número ou o nome do sabor que você quer "
+        "(pode escolher mais de um de uma vez, ex: 'Nutella e Torta de Limão')."
     )
 
 
 def _escolher_sabor(estado: models.EstadoConversa, texto: str) -> str:
     opcoes = sabores_disponiveis()
+    dados = _carregar_dados(estado)
+
+    multiplos = _resolver_multiplos_sabores(texto, opcoes)
+    if multiplos is not None:
+        primeiro, *resto = multiplos
+        dados["fila_sabores"] = resto
+        dados["sabor_atual"] = primeiro
+        _salvar_dados(estado, dados)
+        _ir_para(estado, "aguardando_tamanho")
+        return (
+            f"Beleza, anotei {', '.join(multiplos)}. Vamos por {primeiro} primeiro, "
+            f"escolhe o tamanho:\n{_formatar_tamanhos(primeiro)}"
+        )
+
     sabor = _resolver_sabor(texto, opcoes)
     if sabor is None:
         return f"Não encontrei esse sabor. Escolhe um da lista:\n{_formatar_cardapio()}"
 
-    dados = _carregar_dados(estado)
     dados["sabor_atual"] = sabor
     _salvar_dados(estado, dados)
     _ir_para(estado, "aguardando_tamanho")
@@ -188,6 +230,16 @@ def _escolher_quantidade(estado: models.EstadoConversa, texto: str) -> str:
             "quantidade": quantidade,
         }
     )
+
+    fila = dados.get("fila_sabores") or []
+    if fila:
+        proximo_sabor, *resto = fila
+        dados["fila_sabores"] = resto
+        dados["sabor_atual"] = proximo_sabor
+        _salvar_dados(estado, dados)
+        _ir_para(estado, "aguardando_tamanho")
+        return f"Adicionado! Agora o {proximo_sabor}, escolhe o tamanho:\n{_formatar_tamanhos(proximo_sabor)}"
+
     _salvar_dados(estado, dados)
     _ir_para(estado, "aguardando_mais_itens")
     return "Adicionado! Quer pedir mais algum sabor? (sim/não)"
@@ -197,27 +249,27 @@ def _perguntar_mais_itens(estado: models.EstadoConversa, texto: str) -> str:
     resposta = texto.strip().lower()
     if resposta in PALAVRAS_SIM:
         _ir_para(estado, "aguardando_sabor")
-        return f"Beleza! Escolhe o próximo sabor:\n{_formatar_cardapio()}"
+        return f"Beleza! Escolhe o próximo sabor (ou mais de um, ex: 'Nutella e Ninho'):\n{_formatar_cardapio()}"
     if resposta in PALAVRAS_NAO:
         _ir_para(estado, "aguardando_tipo_entrega")
-        return "Fechado esses itens. Você quer entrega ou retirada na loja?"
+        return "Fechado esses itens. Como você quer receber?\n1. Entrega\n2. Retirada na loja"
     return "Não entendi. Responde 'sim' ou 'não': quer pedir mais algum sabor?"
 
 
 def _escolher_tipo_entrega(estado: models.EstadoConversa, texto: str) -> str:
     resposta = texto.strip().lower()
     dados = _carregar_dados(estado)
-    if "entreg" in resposta:
+    if resposta in ("1",) or "entreg" in resposta:
         dados["tipo_entrega"] = "entrega"
         _salvar_dados(estado, dados)
         _ir_para(estado, "aguardando_endereco")
         return "Show! Me manda o endereço completo para entrega."
-    if "retir" in resposta:
+    if resposta in ("2",) or "retir" in resposta:
         dados["tipo_entrega"] = "retirada"
         _salvar_dados(estado, dados)
         _ir_para(estado, "aguardando_data_hora")
         return f"Combinado, retirada na loja. Pra quando você gostaria de retirar? {PEDIDO_DATA_HORA}"
-    return "Não entendi. Responde 'entrega' ou 'retirada'."
+    return "Não entendi. Responde com o número ou a palavra:\n1. Entrega\n2. Retirada na loja"
 
 
 def _informar_endereco(estado: models.EstadoConversa, texto: str) -> str:
