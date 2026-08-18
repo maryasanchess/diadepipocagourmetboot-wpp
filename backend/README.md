@@ -24,14 +24,17 @@ responder `{"status": "PipocaBot rodando"}`.
 
 ## O que já existe
 - `GET /webhook` — verificação exigida pela Meta ao cadastrar a URL
-- `POST /webhook` — recebe mensagens do WhatsApp e responde com uma mensagem fixa de boas-vindas (fluxo completo de pedido ainda não implementado)
+- `POST /webhook` — recebe mensagens do WhatsApp e conduz a conversa completa de pedido
+- **Fluxo de pedido completo** (`app/conversation.py`): cardápio → sabor → tamanho → quantidade → repetir para mais itens → entrega/retirada → endereço → data/horário → resumo com chave Pix → confirmação → pedido salvo no banco
+- Cliente pode digitar `cancelar` a qualquer momento (cancela o pedido em andamento, ou o último pedido já confirmado, se ainda estiver em status que permite)
+- Cardápio em `app/cardapio.py` — **preços fictícios por enquanto** (a loja ainda não definiu os valores reais; quando a Google Sheet do cardápio existir, só esse arquivo muda)
 - Banco SQLite criado automaticamente em `data/pipoca.db` na primeira execução
 - Checagem de horário de atendimento (8h–21h, configurável no `.env`)
 - Checagem de número admin (`ADMIN_PHONE_NUMBER` no `.env`) com comando `relatorio` (ainda um placeholder)
 
 ## Próximos passos (ver docs/04-guia-de-inicio.md)
 - Testar o webhook publicamente com um túnel temporário (ex: ngrok) durante o desenvolvimento
-- Implementar o fluxo real de pedido (cardápio → tamanho → quantidade → entrega → pagamento)
-- Ler o cardápio da Google Sheet
+- Trocar os preços fictícios pelos preços reais da loja
+- Ler o cardápio da Google Sheet (em vez do placeholder em `app/cardapio.py`)
 - Criar evento no Google Agenda ao confirmar pedido
 - Gerar a planilha mensal sob o comando `relatorio`

@@ -83,9 +83,9 @@ Backend (FastAPI)  ──▶  Cardápio (Google Sheet, editado pela loja)
 - [x] Repositório salvo com segurança no GitHub (privado)
 - [ ] Conta Meta Business + WhatsApp Cloud API configurada
 - [ ] Webhook testado recebendo mensagens reais (via túnel/deploy)
-- [ ] Cardápio lido da Google Sheet
-- [ ] Fluxo de conversa completo (cardápio → tamanho → quantidade → entrega → pagamento → confirmação)
-- [ ] Cancelamento/alteração de pedido pelo bot
+- [x] Fluxo de conversa completo (cardápio → tamanho → quantidade → entrega → pagamento → confirmação), testado de ponta a ponta com preços fictícios
+- [x] Cancelamento de pedido pelo bot (em andamento ou já confirmado)
+- [ ] Cardápio lido da Google Sheet (hoje usa preços fictícios)
 - [ ] Integração com Google Agenda
 - [ ] Geração de planilha mensal (comando admin `relatorio`)
 - [ ] Deploy no VPS
