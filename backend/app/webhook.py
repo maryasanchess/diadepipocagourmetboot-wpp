@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.orm import Session
 
-from . import admin, conversation, whatsapp
+from . import whatsapp
 from .config import settings
 from .database import get_db
+from .dispatcher import processar_mensagem_recebida
 
 router = APIRouter()
 
@@ -33,13 +34,7 @@ async def receber_mensagem(request: Request, db: Session = Depends(get_db)) -> d
                 if not telefone:
                     continue
 
-                if admin.eh_admin(telefone):
-                    resposta_admin = admin.tratar_comando_admin(texto)
-                    if resposta_admin is not None:
-                        await whatsapp.enviar_mensagem_texto(telefone, resposta_admin)
-                        continue
-
-                resposta = conversation.processar_mensagem(db, telefone, texto)
+                resposta = processar_mensagem_recebida(db, telefone, texto)
                 await whatsapp.enviar_mensagem_texto(telefone, resposta)
 
     return {"status": "ok"}

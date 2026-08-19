@@ -10,8 +10,9 @@ Uso:
     .venv\\Scripts\\python.exe chat_local.py
 
 Comandos especiais durante o chat:
-    /novo   -> simula um novo cliente (novo número de telefone)
-    /sair   -> encerra o chat
+    /novo    -> simula um novo cliente (novo número de telefone)
+    /admin   -> simula o número admin configurado no .env (pra testar 'relatorio')
+    /sair    -> encerra o chat
 """
 
 import sys
@@ -20,7 +21,9 @@ sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stdin.reconfigure(encoding="utf-8", errors="replace")
 
 from app.database import Base, SessionLocal, engine
-from app import conversation, models  # noqa: F401 garante que os modelos existam
+from app import models  # noqa: F401 garante que os modelos existam
+from app.admin import _numeros_admin
+from app.dispatcher import processar_mensagem_recebida
 
 Base.metadata.create_all(bind=engine)
 
@@ -55,8 +58,16 @@ def main() -> None:
             telefone = f"55119{random.randint(10000000, 99999999)}"
             print(f"\n[Simulando novo cliente: {telefone}]")
             continue
+        if texto == "/admin":
+            numeros = _numeros_admin()
+            if not numeros:
+                print("\n[Nenhum ADMIN_PHONE_NUMBER configurado no .env]")
+                continue
+            telefone = next(iter(numeros))
+            print(f"\n[Simulando o número admin: {telefone}]")
+            continue
 
-        resposta = conversation.processar_mensagem(db, telefone, texto)
+        resposta = processar_mensagem_recebida(db, telefone, texto)
         print(f"\nBot: {resposta}")
 
     db.close()

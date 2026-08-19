@@ -113,7 +113,7 @@ PipocaBot_WhatsApp/
 - [x] Integração com Google Agenda — evento criado automaticamente ao confirmar pedido, testado com pedido real
 - [ ] Conta Meta Business + WhatsApp Cloud API configurada (travada temporariamente por política anti-fraude de conta nova)
 - [ ] Webhook testado recebendo mensagens reais (via túnel/deploy)
-- [ ] Geração de planilha mensal (comando admin `relatorio`)
+- [x] Geração de planilha mensal (comando admin `relatorio` / `relatorio mes passado`) — falta só o envio automático pelo WhatsApp, hoje o arquivo fica salvo no servidor
 - [ ] Deploy no VPS
 
 ---

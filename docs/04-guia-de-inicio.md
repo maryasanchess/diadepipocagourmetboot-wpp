@@ -44,8 +44,12 @@ Ao confirmar um pedido, o backend cria automaticamente o evento na Agenda
 entrega). Testado com um pedido real de ponta a ponta — evento conferido
 direto na API e removido depois por ser só teste.
 
-## Etapa 7 — Geração da planilha mensal
-Script que lê o banco e gera o `.xlsx` agrupado por sabor/tamanho.
+## Etapa 7 — Geração da planilha mensal ✅ concluída (falta só o envio pelo WhatsApp)
+`backend/app/relatorio.py` lê o banco e gera o `.xlsx` agrupado por
+sabor/tamanho, com faturamento e total de pedidos. Acionado pelos comandos
+admin `relatorio` (mês atual) e `relatorio mes passado`. O arquivo fica
+salvo em `backend/relatorios/` — enviar automaticamente pelo WhatsApp
+depende da Cloud API estar configurada de verdade.
 
 ## Etapa 8 — Deploy no VPS
 1. Escolher provedor (ver `03-custos.md`).
