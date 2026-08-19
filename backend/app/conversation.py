@@ -93,24 +93,40 @@ def _formatar_tamanhos(sabor: str) -> str:
     return "\n".join(f"{i + 1}. {item['tamanho_g']}g - R$ {item['preco']:.2f}" for i, item in enumerate(itens))
 
 
+def _taxa_entrega_configurada() -> float | None:
+    """TAXA_ENTREGA_FIXA no .env: None até a loja definir a regra de entrega."""
+    valor = settings.taxa_entrega_fixa.strip()
+    return float(valor.replace(",", ".")) if valor else None
+
+
 def _resumo_pedido(dados: dict) -> str:
     linhas = ["Resumo do seu pedido:"]
-    total = 0.0
+    total_itens = 0.0
     for item in dados.get("itens", []):
         subtotal = item["preco"] * item["quantidade"]
-        total += subtotal
+        total_itens += subtotal
         linhas.append(f"- {item['quantidade']}x {item['sabor']} {item['tamanho_g']}g - R$ {subtotal:.2f}")
+
+    taxa_entrega = _taxa_entrega_configurada()
+    total_geral = total_itens
 
     if dados.get("tipo_entrega") == "entrega":
         linhas.append(f"Entrega em: {dados.get('endereco', '(endereço não informado)')}")
-        linhas.append("Taxa de entrega: a confirmar com a loja")
+        if taxa_entrega is not None:
+            linhas.append(f"Taxa de entrega: R$ {taxa_entrega:.2f}")
+            total_geral += taxa_entrega
+        else:
+            linhas.append("Taxa de entrega: a confirmar com a loja")
     else:
         linhas.append("Retirada na loja")
 
     if dados.get("data_hora_texto"):
         linhas.append(f"Data/horário desejado: {dados['data_hora_texto']}")
 
-    linhas.append(f"Total dos itens: R$ {total:.2f} (+ taxa de entrega, se houver)")
+    if dados.get("tipo_entrega") == "entrega" and taxa_entrega is None:
+        linhas.append(f"Total dos itens: R$ {total_itens:.2f} (+ taxa de entrega, a confirmar)")
+    else:
+        linhas.append(f"Total: R$ {total_geral:.2f}")
     linhas.append("Pagamento: Pix")
     return "\n".join(linhas)
 
@@ -338,11 +354,13 @@ def _criar_pedido(db: Session, cliente: models.Cliente, dados: dict) -> models.P
     if dados.get("data_hora_iso"):
         data_hora_prevista = datetime.fromisoformat(dados["data_hora_iso"])
 
+    taxa_entrega = _taxa_entrega_configurada() if dados["tipo_entrega"] == "entrega" else None
+
     pedido = models.Pedido(
         cliente_id=cliente.id,
         tipo_entrega=dados["tipo_entrega"],
         endereco=dados.get("endereco"),
-        taxa_entrega=None,
+        taxa_entrega=taxa_entrega,
         data_hora_prevista=data_hora_prevista,
         status=models.StatusPedido.recebido,
     )

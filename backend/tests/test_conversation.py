@@ -10,6 +10,7 @@ docs/08-registro-de-testes.md).
 from datetime import datetime, timedelta
 
 from app import conversation, models
+from app.config import settings
 
 TELEFONE = "5511999990000"
 
@@ -136,3 +137,60 @@ def test_antecedencia_minima_rejeita_horario_muito_proximo(db):
     agora = datetime.now().strftime("%d/%m às %Hh")  # "agora" nunca tem 24h de antecedência
     resposta = conversation.processar_mensagem(db, TELEFONE, agora)
     assert "antecedência" in resposta.lower()
+
+
+def test_taxa_de_entrega_nao_configurada_fica_a_confirmar(db, monkeypatch):
+    monkeypatch.setattr(settings, "taxa_entrega_fixa", "")
+
+    conversation.processar_mensagem(db, TELEFONE, "oi")
+    conversation.processar_mensagem(db, TELEFONE, "Doritos")
+    conversation.processar_mensagem(db, TELEFONE, "1")
+    conversation.processar_mensagem(db, TELEFONE, "1")
+    conversation.processar_mensagem(db, TELEFONE, "nao")
+    conversation.processar_mensagem(db, TELEFONE, "entrega")
+    conversation.processar_mensagem(db, TELEFONE, "Rua Teste, 1")
+    resumo = conversation.processar_mensagem(db, TELEFONE, _data_segura())
+
+    assert "a confirmar" in resumo.lower()
+    conversation.processar_mensagem(db, TELEFONE, "sim")
+
+    pedido = db.query(models.Pedido).order_by(models.Pedido.id.desc()).first()
+    assert pedido.taxa_entrega is None
+
+
+def test_taxa_de_entrega_configurada_entra_no_total(db, monkeypatch):
+    monkeypatch.setattr(settings, "taxa_entrega_fixa", "5.00")
+
+    conversation.processar_mensagem(db, TELEFONE, "oi")
+    conversation.processar_mensagem(db, TELEFONE, "Doritos")
+    conversation.processar_mensagem(db, TELEFONE, "1")  # 80g, R$12
+    conversation.processar_mensagem(db, TELEFONE, "1")
+    conversation.processar_mensagem(db, TELEFONE, "nao")
+    conversation.processar_mensagem(db, TELEFONE, "entrega")
+    conversation.processar_mensagem(db, TELEFONE, "Rua Teste, 1")
+    resumo = conversation.processar_mensagem(db, TELEFONE, _data_segura())
+
+    assert "R$ 5.00" in resumo
+    assert "17.00" in resumo  # 12 (item) + 5 (taxa)
+    conversation.processar_mensagem(db, TELEFONE, "sim")
+
+    pedido = db.query(models.Pedido).order_by(models.Pedido.id.desc()).first()
+    assert pedido.taxa_entrega == 5.00
+
+
+def test_taxa_de_entrega_nao_se_aplica_na_retirada(db, monkeypatch):
+    monkeypatch.setattr(settings, "taxa_entrega_fixa", "5.00")
+
+    conversation.processar_mensagem(db, TELEFONE, "oi")
+    conversation.processar_mensagem(db, TELEFONE, "Doritos")
+    conversation.processar_mensagem(db, TELEFONE, "1")
+    conversation.processar_mensagem(db, TELEFONE, "1")
+    conversation.processar_mensagem(db, TELEFONE, "nao")
+    conversation.processar_mensagem(db, TELEFONE, "retirada")
+    resumo = conversation.processar_mensagem(db, TELEFONE, _data_segura())
+
+    assert "taxa de entrega" not in resumo.lower()
+    conversation.processar_mensagem(db, TELEFONE, "sim")
+
+    pedido = db.query(models.Pedido).order_by(models.Pedido.id.desc()).first()
+    assert pedido.taxa_entrega is None

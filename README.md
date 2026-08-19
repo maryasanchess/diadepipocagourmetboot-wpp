@@ -86,6 +86,7 @@ Resposta de volta pro cliente (whatsapp.py)
 - **Evento automático no Google Agenda** a cada pedido confirmado
 - **Relatório mensal real** (`.xlsx`, quantidade e faturamento por sabor/tamanho) sob comando admin
 - **Múltiplos números admin**, com normalização automática de DDI
+- **Taxa de entrega pronta pra ligar** (`TAXA_ENTREGA_FIXA` no `.env`) — a loja só precisa decidir o valor, sem precisar de código novo
 - **Respostas de agradecimento não reabrem o cardápio** (ex: um "ok" depois do pedido não dispara um pedido novo)
 - **Chat de terminal (`chat_local.py`)** pra testar o bot inteiro sem depender do WhatsApp, incluindo o fluxo admin
 
@@ -175,7 +176,7 @@ PipocaBot_WhatsApp/
     │   ├── respostas.py             RespostaBot: separa texto de anexo, mantém a API real fora da lógica
     │   ├── models.py                tabelas do banco de dados
     │   └── whatsapp.py              envio de mensagens/documentos pela Cloud API
-    ├── tests/                       18 testes automatizados (pytest, banco em memória)
+    ├── tests/                       21 testes automatizados (pytest, banco em memória)
     ├── chat_local.py                testa o bot inteiro no terminal, sem WhatsApp
     ├── data/                        banco SQLite local (gitignored)
     ├── relatorios/                  planilhas mensais geradas (gitignored)
@@ -197,10 +198,11 @@ PipocaBot_WhatsApp/
 - [x] Integração com Google Agenda — evento criado automaticamente ao confirmar pedido, testado com pedido real
 - [x] Geração de planilha mensal (comando admin `relatorio` / `relatorio mes passado`), enviada automaticamente como anexo pelo WhatsApp
 - [x] Múltiplos números admin, com normalização automática de DDI
-- [x] Suite de 18 testes automatizados (`backend/tests/`), sem nenhuma chamada de rede real
+- [x] Suite de 21 testes automatizados (`backend/tests/`), sem nenhuma chamada de rede real
 - [x] Conta Meta Business + app de desenvolvedor criados, webhook configurado e verificado
 - [ ] **Bloqueado:** envio de mensagens restrito pela Meta (erro 130497) até completar a Verificação da Empresa — ver `docs/04-guia-de-inicio.md`
 - [ ] Chave Pix real da loja
+- [ ] Regra e valor da taxa de entrega (infraestrutura pronta, só falta o valor)
 - [ ] Conta no VPS (Hostinger) criada
 - [ ] Deploy no VPS
 

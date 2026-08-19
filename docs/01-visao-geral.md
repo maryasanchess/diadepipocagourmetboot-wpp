@@ -79,7 +79,8 @@ formato:
 
 ## Entrega e retirada (confirmado)
 - A loja faz **os dois**: entrega e retirada no local.
-- Tem **taxa de entrega**, mas a regra ainda está em definição — combinamos esperar. Até lá, o bot pergunta o endereço normalmente e registra a taxa como **"a confirmar"** no pedido; a loja informa o valor manualmente ao cliente por fora do bot. Quando a regra existir (fixo, por bairro, por km), plugamos no fluxo sem precisar redesenhar o resto.
+- Tem **taxa de entrega**, mas a regra ainda está em definição — combinamos esperar. Até lá, o bot pergunta o endereço normalmente e registra a taxa como **"a confirmar"** no pedido; a loja informa o valor manualmente ao cliente por fora do bot.
+- **Já está pronto no código** um jeito simples de ligar isso assim que a loja decidir: um valor **fixo** (em `TAXA_ENTREGA_FIXA`, no `.env`) que passa a aparecer automaticamente no resumo do pedido e no total, sem precisar mexer em nada além dessa variável. Se a regra acabar sendo por bairro/distância em vez de um valor único, aí sim precisa de código novo.
 
 ## Prazo de antecedência (confirmado — revisado)
 A loja trabalha **por encomenda**, então o bot exige **pelo menos 24h de

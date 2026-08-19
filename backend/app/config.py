@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     pix_chave: str = "chave-pix-a-definir@loja.com"
     antecedencia_minima_horas: int = 24
 
+    # String (não float) de propósito: fica vazio até a loja definir a
+    # regra de entrega. Ver conversation.py:_taxa_entrega_configurada().
+    taxa_entrega_fixa: str = ""
+
     app_secret_key: str = ""
 
     model_config = SettingsConfigDict(

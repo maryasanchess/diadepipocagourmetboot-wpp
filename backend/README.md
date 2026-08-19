@@ -66,6 +66,7 @@ reais.
 - **Evento criado automaticamente no Google Agenda** (`app/agenda_service.py`) ao confirmar um pedido — data/horário, itens e endereço (se entrega). Se a Agenda não estiver configurada ou a chamada falhar, o pedido continua sendo salvo normalmente (não trava a conversa)
 - Banco SQLite criado automaticamente em `data/pipoca.db` na primeira execução
 - Checagem de horário de atendimento (8h–21h, configurável no `.env`)
+- **Taxa de entrega pronta pra ligar** — `TAXA_ENTREGA_FIXA` (`.env`) fica em branco até a loja decidir a regra ("a confirmar com a loja" no resumo); preenchendo um valor fixo, passa a aparecer automaticamente no resumo e no total, sem precisar de código novo
 - **Relatório mensal real** (`app/relatorio.py`) — checagem de número admin (`ADMIN_PHONE_NUMBER` no `.env`, aceita mais de um separado por vírgula) com os comandos `relatorio` (mês atual) e `relatorio mes passado`. Gera um `.xlsx` com quantidade e faturamento por sabor/tamanho, salvo em `backend/relatorios/` (nunca commitado — dados reais de venda), e **manda o arquivo direto pelo WhatsApp** como anexo (`app/whatsapp.py: enviar_documento`)
 - `app/dispatcher.py` decide se uma mensagem é comando admin ou pedido normal — usado tanto pelo webhook quanto pelo `chat_local.py`, pra não duplicar essa lógica
 - `app/respostas.py` (`RespostaBot`) separa texto de anexo na resposta — só o webhook de verdade faz a chamada de envio pelo WhatsApp; o resto do código (incluindo os testes) nunca bate na API real
