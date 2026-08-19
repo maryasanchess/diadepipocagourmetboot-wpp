@@ -9,13 +9,16 @@ Você não precisa de nenhuma ferramenta paga para programar:
 - Vamos programar e testar o bot **localmente no seu PC** primeiro, e só depois publicar no VPS.
 
 ## Etapa 1 — Conta WhatsApp Business (Meta)
-1. Criar/usar uma conta em [business.facebook.com](https://business.facebook.com) (Meta Business Suite).
-2. Dentro do Meta Business, acessar "WhatsApp" → criar um app de desenvolvedor em [developers.facebook.com](https://developers.facebook.com).
-3. Associar o app ao WhatsApp Business Platform (Cloud API).
-4. Anotar: `Phone Number ID`, `WhatsApp Business Account ID`, e gerar um `Token de acesso temporário` (depois trocamos por um permanente).
-5. Confirmar a página de preços atual da Cloud API (ver `03-custos.md`).
+1. ✅ Criar conta pessoal + portfólio empresarial em [business.facebook.com](https://business.facebook.com) — "Diadê Pipocas Gourmet".
+2. ✅ Superada a restrição inicial da conta (bloqueio de "conta muito nova" e depois uma restrição de publicidade/automação — resolvida via pedido de análise em 19/08/2026).
+3. ⬜ Criar o app de desenvolvedor em [developers.facebook.com](https://developers.facebook.com), associado ao portfólio "Diadê Pipocas Gourmet".
+4. ⬜ Adicionar o produto **WhatsApp** ao app (Plataforma do WhatsApp Business / Cloud API).
+5. ⬜ Anotar: `Phone Number ID`, `WhatsApp Business Account ID`, e gerar um `Token de acesso temporário` (depois trocamos por um permanente).
+6. ⬜ Confirmar a página de preços atual da Cloud API (ver `03-custos.md`).
 
-> Vamos fazer essa etapa juntos quando você estiver pronto — eu te explico cada tela.
+> Feita junto, tela por tela, mas **sem automação de navegador** — a Meta
+> restringiu a conta uma vez suspeitando de automação, então essa etapa
+> daqui pra frente é sempre a própria loja clicando/digitando.
 
 ## Etapa 2 — Google Cloud (para Calendar e Sheets) ✅ concluída
 1. ✅ Criar um projeto gratuito no [Google Cloud Console](https://console.cloud.google.com). Projeto: `diadepipoca-bot`.
