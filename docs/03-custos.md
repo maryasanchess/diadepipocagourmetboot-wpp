@@ -37,6 +37,28 @@ surpresa na fatura.
 - Git e GitHub (repositório privado é gratuito em conta pessoal/pequena equipe).
 - Google Calendar API (uso dentro da cota gratuita).
 
+## Escolha do provedor de VPS (decidido)
+
+O VPS é onde o backend vai rodar 24 horas por dia, com um endereço fixo na
+internet — sem ele, o bot só funciona enquanto o computador de alguém
+estiver ligado com o script rodando, o que não serve pra atender clientes
+de verdade a qualquer hora.
+
+Comparamos:
+
+| Provedor | Preço aproximado | Pontos fortes | Pontos fracos |
+|---|---|---|---|
+| **Hostinger VPS** | ~R$20–35/mês | Cobra em real, aceita Pix/boleto, suporte em português, painel simples | Menos "padrão de mercado" pra tutoriais técnicos em inglês |
+| DigitalOcean | ~R$25–35/mês (cobrado em dólar) | Muito usado, documentação excelente, confiável | Cobrança em cartão internacional (dólar), sem Pix |
+| Contabo | ~R$25–30/mês | Specs generosas pelo preço | Empresa alemã, suporte só em inglês, cobrança internacional |
+| Oracle Cloud (Free Tier) | R$0 pra sempre | Plano gratuito real | Cadastro com fama de ser burocrático e travar contas sem motivo claro — evitado depois da restrição que pegamos na conta Meta |
+
+**Escolhido: Hostinger.** Paga em real (Pix), suporte em português, e o bot
+é leve o suficiente pra rodar bem no plano mais barato. Evitamos o Oracle
+de propósito por já termos enfrentado uma trava de verificação de conta
+recente (Meta), e não queremos repetir esse tipo de imprevisto logo na
+etapa de hospedagem.
+
 ## Próximo passo sobre custos
 Quando formos configurar a conta Meta Business (em `04-guia-de-inicio.md`),
 paramos juntos na página de preços oficial da Meta para conferir os valores

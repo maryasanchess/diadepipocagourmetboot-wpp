@@ -52,10 +52,11 @@ salvo em `backend/relatorios/` — enviar automaticamente pelo WhatsApp
 depende da Cloud API estar configurada de verdade.
 
 ## Etapa 8 — Deploy no VPS
-1. Escolher provedor (ver `03-custos.md`).
-2. Configurar domínio/subdomínio + HTTPS (Let's Encrypt).
-3. Subir o backend com um processo supervisionado (ex: `systemd` ou Docker) para reiniciar sozinho se cair.
-4. Atualizar a URL do webhook na Meta para apontar pro VPS.
+1. ✅ Escolher provedor (ver `03-custos.md`) — decidido: **Hostinger**.
+2. ⬜ Criar a conta e contratar o plano de VPS.
+3. ⬜ Configurar domínio/subdomínio + HTTPS (Let's Encrypt).
+4. ⬜ Subir o backend com um processo supervisionado (ex: `systemd` ou Docker) para reiniciar sozinho se cair.
+5. ⬜ Atualizar a URL do webhook na Meta para apontar pro VPS.
 
 ## Etapa 9 — Testes com pedido real controlado
 Fazer um pedido de teste de ponta a ponta com um número seu, conferir se o
