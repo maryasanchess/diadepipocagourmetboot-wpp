@@ -34,7 +34,15 @@ async def receber_mensagem(request: Request, db: Session = Depends(get_db)) -> d
     resposta pra todo mundo do lote e ainda geraria reprocessamento
     duplicado no reenvio.
     """
-    payload = await request.json()
+    try:
+        payload = await request.json()
+    except Exception:
+        logger.exception("Corpo do POST /webhook não é um JSON válido")
+        return {"status": "ok"}
+
+    if not isinstance(payload, dict):
+        logger.warning("Corpo do POST /webhook não é um objeto JSON: %r", payload)
+        return {"status": "ok"}
 
     for entrada in payload.get("entry", []):
         for mudanca in entrada.get("changes", []):

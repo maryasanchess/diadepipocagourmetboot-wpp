@@ -82,3 +82,22 @@ def test_post_webhook_erro_em_uma_mensagem_nao_derruba_as_outras(db, monkeypatch
 
     assert r.status_code == 200
     assert chamadas == [("5511911111111", "resposta ok")]
+
+
+def test_post_webhook_com_corpo_invalido_nao_quebra(db):
+    """
+    Um corpo que não seja JSON válido (ou que seja JSON mas não um objeto,
+    ex: uma lista solta) não pode derrubar o endpoint com 500 — mesma
+    lógica do teste acima, só que pro parsing do corpo em si.
+    """
+    app.dependency_overrides[get_db] = lambda: db
+    try:
+        r = client.post(
+            "/webhook", content=b"isso nao e json", headers={"content-type": "application/json"}
+        )
+        assert r.status_code == 200
+
+        r2 = client.post("/webhook", json=["nao", "e", "um", "objeto"])
+        assert r2.status_code == 200
+    finally:
+        app.dependency_overrides.pop(get_db, None)

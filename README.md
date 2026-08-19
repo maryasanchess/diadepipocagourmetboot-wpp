@@ -10,7 +10,7 @@
 ![google](https://img.shields.io/badge/google-Calendar%20%2B%20Sheets-4285F4?style=for-the-badge&logo=google&logoColor=white)
 ![privado](https://img.shields.io/badge/repo-privado-6B3F1D?style=for-the-badge&logo=github&logoColor=white)
 
-![tests](https://img.shields.io/badge/testes-22%20passando-2ea44f?logo=pytest&logoColor=white)
+![tests](https://img.shields.io/badge/testes-23%20passando-2ea44f?logo=pytest&logoColor=white)
 ![progresso](https://img.shields.io/badge/progresso-16%2F21%20etapas-C87F0A)
 ![deploy](https://img.shields.io/badge/deploy-pronto%20pro%20VPS-4285F4?logo=nginx&logoColor=white)
 
@@ -187,7 +187,7 @@ PipocaBot_WhatsApp/
     │   ├── respostas.py             RespostaBot: separa texto de anexo, mantém a API real fora da lógica
     │   ├── models.py                tabelas do banco de dados
     │   └── whatsapp.py              envio de mensagens/documentos pela Cloud API
-    ├── tests/                       22 testes automatizados (pytest, banco em memória)
+    ├── tests/                       23 testes automatizados (pytest, banco em memória)
     ├── chat_local.py                testa o bot inteiro no terminal, sem WhatsApp
     ├── data/                        banco SQLite local (gitignored)
     ├── relatorios/                  planilhas mensais geradas (gitignored)
@@ -218,7 +218,7 @@ PipocaBot_WhatsApp/
 - [x] Integração com Google Agenda — evento criado automaticamente ao confirmar pedido, testado com pedido real
 - [x] Geração de planilha mensal (comando admin `relatorio` / `relatorio mes passado`), enviada automaticamente como anexo pelo WhatsApp
 - [x] Múltiplos números admin, com normalização automática de DDI
-- [x] Suite de 22 testes automatizados (`backend/tests/`), sem nenhuma chamada de rede real
+- [x] Suite de 23 testes automatizados (`backend/tests/`), sem nenhuma chamada de rede real
 - [x] Conta Meta Business + app de desenvolvedor criados, webhook configurado e verificado
 - [x] Arquivos de deploy prontos (`systemd` + `nginx`, ver `docs/09-deploy-vps.md`), só falta a conta do VPS existir
 - [ ] Verificação da Empresa na Meta (CNPJ) — desbloqueia o envio de mensagens

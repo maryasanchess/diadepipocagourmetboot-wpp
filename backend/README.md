@@ -46,10 +46,10 @@ cd backend
 .venv\Scripts\python.exe -m pytest tests/ -v
 ```
 
-22 testes cobrindo o fluxo de pedido completo, múltiplos sabores,
+23 testes cobrindo o fluxo de pedido completo, múltiplos sabores,
 cancelamento, antecedência mínima, comandos admin, o relatório mensal e
-a resiliência do webhook (erro em uma mensagem do lote não derruba as
-outras). Cada bug real encontrado em teste manual (ver
+a resiliência do webhook (erro em uma mensagem do lote, ou corpo da
+requisição inválido, não derrubam o endpoint). Cada bug real encontrado em teste manual (ver
 `docs/08-registro-de-testes.md`) virou um teste automatizado aqui, pra
 nunca mais precisar redescobrir o mesmo problema. Rodam em banco SQLite
 em memória — não tocam no banco de desenvolvimento nem geram arquivos
