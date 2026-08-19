@@ -4,11 +4,15 @@
 
 **Atendimento automático de pedidos via WhatsApp para a Diadê Pipocas Gourmet**
 
-![status](https://img.shields.io/badge/status-em%20desenvolvimento-C87F0A)
-![python](https://img.shields.io/badge/backend-Python%20%2B%20FastAPI-3776AB)
-![whatsapp](https://img.shields.io/badge/whatsapp-Cloud%20API-25D366)
-![google](https://img.shields.io/badge/google-Calendar%20%2B%20Sheets-4285F4)
-![privado](https://img.shields.io/badge/repo-privado-6B3F1D)
+![status](https://img.shields.io/badge/status-em%20desenvolvimento-C87F0A?style=for-the-badge)
+![python](https://img.shields.io/badge/backend-Python%20%2B%20FastAPI-3776AB?style=for-the-badge&logo=fastapi&logoColor=white)
+![whatsapp](https://img.shields.io/badge/whatsapp-Cloud%20API-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)
+![google](https://img.shields.io/badge/google-Calendar%20%2B%20Sheets-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![privado](https://img.shields.io/badge/repo-privado-6B3F1D?style=for-the-badge&logo=github&logoColor=white)
+
+![tests](https://img.shields.io/badge/testes-22%20passando-2ea44f?logo=pytest&logoColor=white)
+![progresso](https://img.shields.io/badge/progresso-16%2F21%20etapas-C87F0A)
+![deploy](https://img.shields.io/badge/deploy-pronto%20pro%20VPS-4285F4?logo=nginx&logoColor=white)
 
 </div>
 
@@ -39,34 +43,36 @@ A loja só interage com três lugares:
 | 📊 **Google Sheet do cardápio** | Editar sabores, tamanhos, preços e disponibilidade, sem mexer em código |
 | 📈 **Relatório mensal** | Pedir pelo WhatsApp (número admin) e receber a quantidade vendida por sabor/tamanho |
 
+> [!NOTE]
 > Projeto em construção ativa. A documentação em [`docs/`](docs/) é escrita
 > junto com o desenvolvimento — cada decisão, cada bug real encontrado em
 > teste e cada etapa concluída fica registrada lá, com data e contexto.
 
 ## 🔄 Como funciona
 
-```
-Cliente (WhatsApp)
-      │  manda mensagem
-      ▼
-WhatsApp Cloud API (Meta)
-      │  webhook (POST /webhook)
-      ▼
-Backend (FastAPI)
-      │
-      ├──▶  dispatcher.py — decide: comando admin ou pedido normal?
-      │        │
-      │        ├──▶  admin.py + relatorio.py — gera .xlsx do mês sob comando
-      │        │
-      │        └──▶  conversation.py — conduz o pedido (sabor → tamanho →
-      │                 quantidade → entrega/retirada → pagamento)
-      │                    │
-      │                    ├──▶ cardapio.py ──▶ Google Sheet (preços/disponibilidade)
-      │                    ├──▶ agendamento.py — valida antecedência mínima
-      │                    ├──▶ banco de dados — salva o pedido
-      │                    └──▶ agenda_service.py ──▶ Google Agenda (evento de entrega)
-      ▼
-Resposta de volta pro cliente (whatsapp.py)
+```mermaid
+flowchart TD
+    Cliente["📱 Cliente<br/>WhatsApp"] -->|mensagem| Meta["☁️ WhatsApp Cloud API"]
+    Meta -->|webhook POST /webhook| Backend["🐍 Backend FastAPI"]
+    Backend --> Dispatcher{"dispatcher.py<br/>admin ou pedido?"}
+
+    Dispatcher -->|comando admin| Admin["📈 admin.py + relatorio.py<br/>gera .xlsx do mês"]
+    Admin --> Meta
+
+    Dispatcher -->|pedido normal| Conversation["💬 conversation.py<br/>sabor → tamanho → qtd →<br/>entrega/retirada → pagamento"]
+    Conversation --> Sheet[("📊 Google Sheet<br/>cardápio")]
+    Conversation --> Agendamento["⏰ agendamento.py<br/>antecedência mínima"]
+    Conversation --> DB[("🗄️ Banco de dados")]
+    Conversation --> Agenda["📅 Google Agenda<br/>evento de entrega"]
+    Conversation -->|resposta| Meta
+    Meta -->|mensagem| Cliente
+
+    style Cliente fill:#25D366,color:#fff
+    style Meta fill:#25D366,color:#fff
+    style Backend fill:#3776AB,color:#fff
+    style Sheet fill:#4285F4,color:#fff
+    style Agenda fill:#4285F4,color:#fff
+    style DB fill:#C87F0A,color:#fff
 ```
 
 1. Cliente manda mensagem no WhatsApp da loja.
@@ -156,6 +162,9 @@ Mais detalhes em [`backend/README.md`](backend/README.md).
 
 ## 🗂️ Estrutura do projeto
 
+<details>
+<summary>📂 Ver a árvore completa de arquivos</summary>
+
 ```
 PipocaBot_WhatsApp/
 ├── README.md                        este arquivo
@@ -185,7 +194,16 @@ PipocaBot_WhatsApp/
     └── credentials/                 credenciais do Google (gitignored)
 ```
 
+</details>
+
 ## ✅ Status atual
+
+> [!WARNING]
+> **Bloqueado:** envio de mensagens restrito pela Meta (erro 130497) até
+> completar a Verificação da Empresa — ver [`docs/04-guia-de-inicio.md`](docs/04-guia-de-inicio.md).
+
+<details open>
+<summary>📋 Ver checklist completo (16/21)</summary>
 
 - [x] Estrutura do projeto e documentação inicial
 - [x] Repositório salvo com segurança no GitHub (privado)
@@ -202,12 +220,14 @@ PipocaBot_WhatsApp/
 - [x] Múltiplos números admin, com normalização automática de DDI
 - [x] Suite de 22 testes automatizados (`backend/tests/`), sem nenhuma chamada de rede real
 - [x] Conta Meta Business + app de desenvolvedor criados, webhook configurado e verificado
-- [ ] **Bloqueado:** envio de mensagens restrito pela Meta (erro 130497) até completar a Verificação da Empresa — ver `docs/04-guia-de-inicio.md`
+- [x] Arquivos de deploy prontos (`systemd` + `nginx`, ver `docs/09-deploy-vps.md`), só falta a conta do VPS existir
+- [ ] Verificação da Empresa na Meta (CNPJ) — desbloqueia o envio de mensagens
 - [ ] Chave Pix real da loja
 - [ ] Regra e valor da taxa de entrega (infraestrutura pronta, só falta o valor)
-- [x] Arquivos de deploy prontos (`systemd` + `nginx`, ver `docs/09-deploy-vps.md`), só falta a conta do VPS existir
 - [ ] Conta no VPS (Hostinger) criada
 - [ ] Deploy no VPS
+
+</details>
 
 ---
 
