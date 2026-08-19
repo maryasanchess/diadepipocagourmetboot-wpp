@@ -32,6 +32,7 @@ __pycache__/
 venv/
 env/
 *.egg-info/
+.pytest_cache/
 
 # ==== Node (se algum utilitário usar) ====
 node_modules/

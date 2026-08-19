@@ -38,6 +38,22 @@ hora. `/novo` simula um cliente diferente (do zero); `/admin` simula o
 número admin configurado no `.env` (pra testar o comando `relatorio`);
 `/sair` encerra.
 
+## Rodando os testes automatizados
+
+```powershell
+cd backend
+.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.venv\Scripts\python.exe -m pytest tests/ -v
+```
+
+18 testes cobrindo o fluxo de pedido completo, múltiplos sabores,
+cancelamento, antecedência mínima, comandos admin e o relatório mensal.
+Cada bug real encontrado em teste manual (ver
+`docs/08-registro-de-testes.md`) virou um teste automatizado aqui, pra
+nunca mais precisar redescobrir o mesmo problema. Rodam em banco SQLite
+em memória — não tocam no banco de desenvolvimento nem geram arquivos
+reais.
+
 ## O que já existe
 - `GET /webhook` — verificação exigida pela Meta ao cadastrar a URL
 - `POST /webhook` — recebe mensagens do WhatsApp e conduz a conversa completa de pedido
