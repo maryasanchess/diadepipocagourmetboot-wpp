@@ -112,6 +112,12 @@ cd backend
 ```
 `/novo` simula outro cliente · `/admin` simula o número admin · `/sair` encerra.
 
+**Rodar os testes automatizados:**
+```powershell
+.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.venv\Scripts\python.exe -m pytest tests/ -v
+```
+
 **Subir o servidor de verdade:**
 ```powershell
 uvicorn app.main:app --reload --port 8000
@@ -166,8 +172,10 @@ PipocaBot_WhatsApp/
     │   ├── relatorio.py             gera o .xlsx do relatório mensal
     │   ├── admin.py                 comandos administrativos (relatorio, etc.)
     │   ├── google_client.py         autenticação compartilhada com as APIs do Google
+    │   ├── respostas.py             RespostaBot: separa texto de anexo, mantém a API real fora da lógica
     │   ├── models.py                tabelas do banco de dados
-    │   └── whatsapp.py              envio de mensagens pela Cloud API
+    │   └── whatsapp.py              envio de mensagens/documentos pela Cloud API
+    ├── tests/                       18 testes automatizados (pytest, banco em memória)
     ├── chat_local.py                testa o bot inteiro no terminal, sem WhatsApp
     ├── data/                        banco SQLite local (gitignored)
     ├── relatorios/                  planilhas mensais geradas (gitignored)
@@ -187,8 +195,9 @@ PipocaBot_WhatsApp/
 - [x] Preços reais definidos pela loja
 - [x] Cardápio lido direto da Google Sheet (com cache e fallback se a planilha falhar)
 - [x] Integração com Google Agenda — evento criado automaticamente ao confirmar pedido, testado com pedido real
-- [x] Geração de planilha mensal (comando admin `relatorio` / `relatorio mes passado`) — falta só o envio automático pelo WhatsApp, hoje o arquivo fica salvo no servidor
+- [x] Geração de planilha mensal (comando admin `relatorio` / `relatorio mes passado`), enviada automaticamente como anexo pelo WhatsApp
 - [x] Múltiplos números admin, com normalização automática de DDI
+- [x] Suite de 18 testes automatizados (`backend/tests/`), sem nenhuma chamada de rede real
 - [x] Conta Meta Business + app de desenvolvedor criados, webhook configurado e verificado
 - [ ] **Bloqueado:** envio de mensagens restrito pela Meta (erro 130497) até completar a Verificação da Empresa — ver `docs/04-guia-de-inicio.md`
 - [ ] Chave Pix real da loja

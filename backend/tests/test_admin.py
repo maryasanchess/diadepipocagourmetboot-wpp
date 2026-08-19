@@ -67,16 +67,17 @@ def test_relatorio_agrega_por_sabor_e_tamanho(db):
 def test_dispatcher_admin_com_comando_reconhecido(db, monkeypatch):
     monkeypatch.setattr(settings, "admin_phone_number", "5511999990001")
     resposta = dispatcher.processar_mensagem_recebida(db, "5511999990001", "relatorio")
-    assert "relatório" in resposta.lower()
 
-    from app.relatorio import RELATORIOS_DIR
-    agora = datetime.now()
-    caminho = RELATORIOS_DIR / f"relatorio_{agora.year}-{agora.month:02d}.xlsx"
-    if caminho.exists():
-        caminho.unlink()
+    assert "relatório" in resposta.texto.lower()
+    assert resposta.anexo is not None
+    assert resposta.anexo.exists()
+    assert resposta.anexo.suffix == ".xlsx"
+
+    resposta.anexo.unlink()
 
 
 def test_dispatcher_admin_sem_comando_reconhecido_vira_pedido_normal(db, monkeypatch):
     monkeypatch.setattr(settings, "admin_phone_number", "5511999990001")
     resposta = dispatcher.processar_mensagem_recebida(db, "5511999990001", "oi")
-    assert "bem-vindo" in resposta.lower()
+    assert "bem-vindo" in resposta.texto.lower()
+    assert resposta.anexo is None

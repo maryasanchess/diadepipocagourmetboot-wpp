@@ -66,12 +66,12 @@ reais.
 - **Evento criado automaticamente no Google Agenda** (`app/agenda_service.py`) ao confirmar um pedido — data/horário, itens e endereço (se entrega). Se a Agenda não estiver configurada ou a chamada falhar, o pedido continua sendo salvo normalmente (não trava a conversa)
 - Banco SQLite criado automaticamente em `data/pipoca.db` na primeira execução
 - Checagem de horário de atendimento (8h–21h, configurável no `.env`)
-- **Relatório mensal real** (`app/relatorio.py`) — checagem de número admin (`ADMIN_PHONE_NUMBER` no `.env`, aceita mais de um separado por vírgula) com os comandos `relatorio` (mês atual) e `relatorio mes passado`. Gera um `.xlsx` com quantidade e faturamento por sabor/tamanho, salvo em `backend/relatorios/` (nunca commitado — dados reais de venda). O envio automático do arquivo pelo WhatsApp ainda não está pronto (depende da Cloud API real); por enquanto a loja pega o arquivo direto no servidor
+- **Relatório mensal real** (`app/relatorio.py`) — checagem de número admin (`ADMIN_PHONE_NUMBER` no `.env`, aceita mais de um separado por vírgula) com os comandos `relatorio` (mês atual) e `relatorio mes passado`. Gera um `.xlsx` com quantidade e faturamento por sabor/tamanho, salvo em `backend/relatorios/` (nunca commitado — dados reais de venda), e **manda o arquivo direto pelo WhatsApp** como anexo (`app/whatsapp.py: enviar_documento`)
 - `app/dispatcher.py` decide se uma mensagem é comando admin ou pedido normal — usado tanto pelo webhook quanto pelo `chat_local.py`, pra não duplicar essa lógica
+- `app/respostas.py` (`RespostaBot`) separa texto de anexo na resposta — só o webhook de verdade faz a chamada de envio pelo WhatsApp; o resto do código (incluindo os testes) nunca bate na API real
 
 ## Próximos passos (ver docs/04-guia-de-inicio.md)
 - Definir a chave Pix real da loja no `.env`
-- Criar a conta Meta Business + WhatsApp Cloud API (aguardando análise da Meta sobre restrição da conta)
+- Completar a Verificação da Empresa na Meta (bloqueando o envio de mensagens agora — erro 130497)
 - Testar o webhook publicamente com um túnel temporário (ex: ngrok) durante o desenvolvimento
-- Enviar o `.xlsx` do relatório como anexo pelo WhatsApp (hoje só fica salvo no servidor)
 - Deploy no VPS

@@ -35,6 +35,8 @@ async def receber_mensagem(request: Request, db: Session = Depends(get_db)) -> d
                     continue
 
                 resposta = processar_mensagem_recebida(db, telefone, texto)
-                await whatsapp.enviar_mensagem_texto(telefone, resposta)
+                await whatsapp.enviar_mensagem_texto(telefone, resposta.texto)
+                if resposta.anexo is not None:
+                    await whatsapp.enviar_documento(telefone, resposta.anexo)
 
     return {"status": "ok"}

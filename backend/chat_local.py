@@ -68,7 +68,9 @@ def main() -> None:
             continue
 
         resposta = processar_mensagem_recebida(db, telefone, texto)
-        print(f"\nBot: {resposta}")
+        print(f"\nBot: {resposta.texto}")
+        if resposta.anexo is not None:
+            print(f"[anexo que seria enviado de verdade: {resposta.anexo}]")
 
     db.close()
 
