@@ -46,9 +46,10 @@ cd backend
 .venv\Scripts\python.exe -m pytest tests/ -v
 ```
 
-18 testes cobrindo o fluxo de pedido completo, múltiplos sabores,
-cancelamento, antecedência mínima, comandos admin e o relatório mensal.
-Cada bug real encontrado em teste manual (ver
+22 testes cobrindo o fluxo de pedido completo, múltiplos sabores,
+cancelamento, antecedência mínima, comandos admin, o relatório mensal e
+a resiliência do webhook (erro em uma mensagem do lote não derruba as
+outras). Cada bug real encontrado em teste manual (ver
 `docs/08-registro-de-testes.md`) virou um teste automatizado aqui, pra
 nunca mais precisar redescobrir o mesmo problema. Rodam em banco SQLite
 em memória — não tocam no banco de desenvolvimento nem geram arquivos
@@ -56,7 +57,7 @@ reais.
 
 ## O que já existe
 - `GET /webhook` — verificação exigida pela Meta ao cadastrar a URL
-- `POST /webhook` — recebe mensagens do WhatsApp e conduz a conversa completa de pedido
+- `POST /webhook` — recebe mensagens do WhatsApp e conduz a conversa completa de pedido. Um POST pode trazer mensagens de vários clientes numa lista só; se uma falhar, as outras ainda são respondidas e o endpoint sempre devolve 200 (senão a Meta reenvia o lote inteiro, duplicando o que já tinha funcionado)
 - **Fluxo de pedido completo** (`app/conversation.py`): cardápio → sabor → tamanho → quantidade → repetir para mais itens → entrega/retirada → endereço → data/horário → resumo com chave Pix → confirmação → pedido salvo no banco
 - Cliente pode escolher **mais de um sabor numa mensagem só** (ex: "Nutella e Torta de Limão") — o bot pergunta tamanho e quantidade de cada um em sequência
 - Reconhecimento de sabor **ignora acentos** (ex: "limao" reconhece "Limão") — achado em teste real, ver `docs/08-registro-de-testes.md`
