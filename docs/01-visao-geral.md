@@ -29,7 +29,7 @@ equipe da loja só interage com dois lugares:
 7. **Data/horário desejado** — cliente informa quando quer receber; bot exige pelo menos 24h de antecedência (loja trabalha por encomenda) e reformula o pedido se a data não for entendida ou for muito próxima.
 8. **Forma de pagamento** — só Pix; bot informa a chave da loja no resumo do pedido.
 9. **Resumo e confirmação** — bot mostra o pedido completo (itens, total, entrega/retirada, data/horário, chave Pix) e pede confirmação final.
-10. **Fechamento** — bot salva o pedido no banco com a data/horário validada. *(Ainda falta: criar o evento no Google Agenda — pendente da conta Google configurada.)*
+10. **Fechamento** — bot salva o pedido no banco com a data/horário validada e cria automaticamente o evento no Google Agenda com a previsão de entrega.
 
 ## Cardápio (confirmado)
 
@@ -130,7 +130,6 @@ Qualquer tentativa de usar um comando admin vindo de outro número é
 ignorada/rejeitada — o bot trata como mensagem normal de cliente.
 
 ### Ainda em aberto
-- Preços de cada sabor+tamanho na planilha do cardápio
 - Regra e valor da taxa de entrega
 - Comportamento exato do bot fora do horário 8h–21h (só avisa, ou enfileira o pedido?)
 

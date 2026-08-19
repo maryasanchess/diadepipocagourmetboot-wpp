@@ -16,26 +16,41 @@ formatados (títulos, tabelas, listas), então dá pra ler direto de lá.
 2. Abre o VS Code → **File → Open Folder** → escolhe `C:\Users\marya.souza\Downloads\PipocaBot_WhatsApp`
 3. Os arquivos `.md` podem ser vistos formatados com `Ctrl+Shift+V`
 
-## 2. Testar o bot conversando com ele (sem WhatsApp configurado)
+## 2. Testar o bot conversando com ele (sem depender do WhatsApp)
 
-Ainda não existe conta Meta/WhatsApp configurada, mas dá pra testar o fluxo
-de pedido completo direto no terminal:
+O envio de mensagens pelo WhatsApp está temporariamente bloqueado (erro
+130497 da Meta, até completar a Verificação da Empresa — ver
+`docs/04-guia-de-inicio.md`), mas isso não trava o teste do bot: dá pra
+testar o fluxo de pedido completo direto no terminal, com o cardápio e os
+preços **reais**:
 
 ```powershell
 cd C:\Users\marya.souza\Downloads\PipocaBot_WhatsApp\backend
-.venv\Scripts\Activate.ps1
-python chat_local.py
+.venv\Scripts\python.exe chat_local.py
 ```
 
 Digite as mensagens como se você fosse o cliente (ex: `oi`, depois o nome
 de um sabor, depois o tamanho, etc.) e veja a resposta do bot aparecer na
 hora. Comandos especiais dentro do chat:
 - `/novo` — simula um cliente diferente, do zero (novo número de telefone fictício)
+- `/admin` — simula o número admin configurado no `.env`, pra testar o comando `relatorio`
 - `/sair` — encerra o chat
 - `cancelar` — testa o cancelamento de pedido (funciona igual vai funcionar no WhatsApp de verdade)
 
-Isso usa os **preços fictícios** do cardápio (`backend/app/cardapio.py`) até
-a loja definir os valores reais.
+O cardápio vem direto da Google Sheet configurada (preços reais definidos
+pela loja) — se a planilha não estiver acessível, o bot cai num cardápio
+fixo de reserva pra nunca travar a conversa.
+
+### Rodar a suite de testes automatizados
+Além de conversar manualmente, o projeto tem 18 testes automatizados que
+cobrem o fluxo inteiro (pedido completo, cancelamento, antecedência
+mínima, relatório, etc.) — rodam em segundos, sem tocar no banco real:
+
+```powershell
+cd backend
+.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.venv\Scripts\python.exe -m pytest tests/ -v
+```
 
 ### Se quiser começar do zero de novo
 Cada teste fica salvo no banco local (`backend/data/pipoca.db`), então se
@@ -47,7 +62,8 @@ apagar tudo e testar do zero:
 del C:\Users\marya.souza\Downloads\PipocaBot_WhatsApp\backend\data\pipoca.db
 ```
 
-(Esse arquivo nunca vai pro Git, então apagar ele não afeta nada do projeto salvo.)
+(Esse arquivo, e os relatórios gerados em `backend/relatorios/`, nunca vão
+pro Git — apagar eles não afeta nada do projeto salvo.)
 
 ## 3. Ver a lista do que já foi feito e o que falta
 

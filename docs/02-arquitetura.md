@@ -39,9 +39,10 @@ salvo no banco (não em memória), para sobreviver a reinícios do servidor.
 
 ### 3. Banco de dados
 SQLite para começar — é um único arquivo, fácil de fazer backup, e dá conta
-tranquilamente do volume de uma loja pequena/média. Tabelas principais:
+tranquilamente do volume de uma loja pequena/média. Tabelas principais
+(`app/models.py`):
 - `clientes` (telefone, nome)
-- `pedidos` (cliente, itens, endereço/retirada, data de entrega, `status`: `recebido` → `confirmado` → `em_preparo` → `em_entrega`/`pronto_retirada` → `concluido`, ou `cancelado`)
+- `pedidos` (cliente, itens, endereço/retirada, data/hora prevista, `evento_agenda_id` do Google Agenda, `status`: `recebido` → `confirmado` → `em_preparo` → `em_entrega`/`pronto_retirada` → `concluido`, ou `cancelado`)
 - `itens_pedido` (pedido, sabor, tamanho, quantidade, preço)
 - `estado_conversa` (telefone, etapa_atual, dados_temporarios)
 
@@ -64,23 +65,33 @@ Cloud com acesso de "editor" a um calendário específico (não a agenda
 pessoal de ninguém).
 
 ### 6. Gerador de planilha mensal
-Um script/rotina que consulta o banco (`pedidos` + `itens_pedido`) filtrando
-por mês, agrupa por sabor + tamanho, e gera um `.xlsx`. É disparado pelo
-**comando de admin** (`relatorio`, ver item 8), e futuramente também pode
-rodar sozinho todo dia 1º via agendador (cron).
+`app/relatorio.py` consulta o banco (`pedidos` + `itens_pedido`) filtrando
+por mês (exclui pedidos cancelados), agrupa por sabor + tamanho, e gera um
+`.xlsx` com openpyxl (quantidade, faturamento por item, total de pedidos e
+faturamento total). É disparado pelo **comando de admin** (`relatorio` /
+`relatorio mes passado`, ver item 7) e **enviado automaticamente como
+anexo pelo WhatsApp** (`whatsapp.py: enviar_documento`) — não fica só
+salvo no servidor.
 
 ### 7. Controle de admin
-O número de telefone da loja fica configurado em `.env`
-(`ADMIN_PHONE_NUMBER`). Toda mensagem recebida passa por uma checagem: se o
-remetente é o número admin, ela pode acionar comandos especiais
-(`relatorio`, etc.); qualquer outro número só tem acesso ao fluxo normal de
-pedido. Essa checagem é simples (comparação de string), sem necessidade de
-login/senha.
+Um ou mais números de telefone da loja ficam configurados em `.env`
+(`ADMIN_PHONE_NUMBER`, separados por vírgula). `app/admin.py` normaliza
+automaticamente números sem o código do país (55) antes de comparar. Toda
+mensagem recebida passa pelo `app/dispatcher.py`: se o remetente é um dos
+números admin **e** o texto é um comando reconhecido, aciona esse comando;
+caso contrário (mesmo vindo do número admin), segue pro fluxo normal de
+pedido — o número admin também pode ser cliente.
 
-### 8. Horário de atendimento
+### 8. Horário de atendimento e antecedência mínima
 Antes de avançar o fluxo de pedido, o backend verifica se o horário atual
-(fuso da loja) está entre **8h e 21h**. Fora disso, o bot ainda responde,
-mas avisa que pedidos são processados dentro do horário de atendimento.
+(fuso da loja) está entre **8h e 21h** (`app/horario.py`). Fora disso, o
+bot ainda responde, mas avisa que pedidos são processados dentro do
+horário de atendimento.
+
+Separadamente, `app/agendamento.py` valida que a data/horário desejado
+pelo cliente tem pelo menos `ANTECEDENCIA_MINIMA_HORAS` de folga a partir
+de agora (a loja trabalha por encomenda) — parser de data/hora feito à
+mão de propósito, sem depender de lib de NLP (ver `docs/08-registro-de-testes.md`).
 
 ### 9. Hospedagem (VPS)
 O backend fica rodando continuamente num VPS com:
