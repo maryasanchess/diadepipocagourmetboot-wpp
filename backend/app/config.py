@@ -15,7 +15,9 @@ class Settings(BaseSettings):
     whatsapp_verify_token: str = ""
 
     google_calendar_id: str = ""
+    google_sheets_cardapio_id: str = ""
     google_credentials_path: str = str(BASE_DIR / "credentials" / "google_credentials.json")
+    cardapio_cache_minutos: int = 10
 
     database_url: str = f"sqlite:///{DATA_DIR / 'pipoca.db'}"
 

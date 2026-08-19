@@ -108,11 +108,11 @@ PipocaBot_WhatsApp/
 - [x] Cancelamento de pedido pelo bot (em andamento ou já confirmado)
 - [x] Antecedência mínima de 24h para pedidos (loja trabalha por encomenda)
 - [x] Chat de terminal para testar sem depender do WhatsApp (`chat_local.py`)
-- [x] Preços reais definidos pela loja (fixos no código por enquanto, ver `docs/01-visao-geral.md`)
-- [ ] Cardápio lido da Google Sheet (hoje os preços estão fixos em `backend/app/cardapio.py`)
-- [ ] Conta Meta Business + WhatsApp Cloud API configurada
+- [x] Preços reais definidos pela loja
+- [x] Cardápio lido direto da Google Sheet (com cache e fallback se a planilha falhar)
+- [x] Integração com Google Agenda — evento criado automaticamente ao confirmar pedido, testado com pedido real
+- [ ] Conta Meta Business + WhatsApp Cloud API configurada (travada temporariamente por política anti-fraude de conta nova)
 - [ ] Webhook testado recebendo mensagens reais (via túnel/deploy)
-- [ ] Integração com Google Agenda
 - [ ] Geração de planilha mensal (comando admin `relatorio`)
 - [ ] Deploy no VPS
 

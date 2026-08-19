@@ -6,6 +6,7 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 
 from . import models
+from .agenda_service import criar_evento_pedido
 from .agendamento import antecedencia_suficiente, interpretar_data_hora
 from .cardapio import sabores_disponiveis, tamanhos_disponiveis
 from .config import settings
@@ -357,6 +358,10 @@ def _criar_pedido(db: Session, cliente: models.Cliente, dados: dict) -> models.P
     db.add(pedido)
     db.commit()
     db.refresh(pedido)
+
+    pedido.evento_agenda_id = criar_evento_pedido(pedido)
+    db.commit()
+
     return pedido
 
 

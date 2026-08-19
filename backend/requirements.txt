@@ -3,3 +3,5 @@ uvicorn[standard]
 sqlalchemy
 pydantic-settings
 httpx
+google-api-python-client
+google-auth

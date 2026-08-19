@@ -17,12 +17,12 @@ Você não precisa de nenhuma ferramenta paga para programar:
 
 > Vamos fazer essa etapa juntos quando você estiver pronto — eu te explico cada tela.
 
-## Etapa 2 — Google Cloud (para Calendar e Sheets)
+## Etapa 2 — Google Cloud (para Calendar e Sheets) ✅ concluída
 1. ✅ Criar um projeto gratuito no [Google Cloud Console](https://console.cloud.google.com). Projeto: `diadepipoca-bot`.
 2. ✅ Ativar a "Google Calendar API" **e** a "Google Sheets API" (mesmo projeto).
 3. ✅ Criar uma **conta de serviço** e baixar o arquivo de credenciais JSON. Conta de serviço: `diadepipocas-agenda-planilha@diadepipoca-bot.iam.gserviceaccount.com` (arquivo salvo localmente em `backend/credentials/google_credentials.json`, protegido pelo `.gitignore` — nunca é commitado).
-4. ⬜ Compartilhar o Google Agenda da loja com o e-mail da conta de serviço (permissão de editor).
-5. ⬜ Criar a planilha do cardápio (colunas: `sabor`, `tamanho_g`, `preco`, `disponivel`) e compartilhar com o e-mail da conta de serviço (permissão de leitor é suficiente, já que quem edita é a loja pelo navegador/celular, e o bot só lê).
+4. ✅ Google Agenda "Pedidos Diadê Pipocas" compartilhada com a conta de serviço (permissão de editor). ID salvo em `.env` (local, nunca commitado).
+5. ✅ Planilha "Cardápio Diadê Pipocas" criada, preenchida com os 18 itens do cardápio, formatada e compartilhada com a conta de serviço. ID salvo em `.env`.
 
 ## Etapa 3 — Esqueleto do backend (local)
 1. Criar ambiente virtual Python (`python -m venv .venv`) dentro de `backend/`.
@@ -30,15 +30,19 @@ Você não precisa de nenhuma ferramenta paga para programar:
 3. Criar os dois endpoints do webhook (`GET` de verificação, `POST` de recebimento).
 4. Testar localmente expondo a porta com uma ferramenta de túnel temporária (ex: ngrok) só durante o desenvolvimento, para a Meta conseguir alcançar seu PC.
 
-## Etapa 4 — Fluxo de conversa
-Implementar a state machine descrita em `01-visao-geral.md`, com o cardápio
-real da loja (sabores, tamanhos, preços) que você vai me passar.
+## Etapa 4 — Fluxo de conversa ✅ concluída
+State machine completa (`01-visao-geral.md`), com o cardápio lido **direto
+da Google Sheet** (`backend/app/cardapio.py`, com cache e fallback se a
+planilha falhar) em vez de preços fixos no código.
 
 ## Etapa 5 — Persistência (banco de dados)
 Modelar as tabelas de `02-arquitetura.md`, salvar pedidos reais de teste.
 
-## Etapa 6 — Integração com Google Agenda
-Ao confirmar um pedido, criar o evento automaticamente.
+## Etapa 6 — Integração com Google Agenda ✅ concluída
+Ao confirmar um pedido, o backend cria automaticamente o evento na Agenda
+(`backend/app/agenda_service.py`), com data/horário, itens e endereço (se
+entrega). Testado com um pedido real de ponta a ponta — evento conferido
+direto na API e removido depois por ser só teste.
 
 ## Etapa 7 — Geração da planilha mensal
 Script que lê o banco e gera o `.xlsx` agrupado por sabor/tamanho.

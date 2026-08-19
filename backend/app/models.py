@@ -45,6 +45,7 @@ class Pedido(Base):
     endereco = Column(Text, nullable=True)
     taxa_entrega = Column(Float, nullable=True)  # None = "a confirmar"
     data_hora_prevista = Column(DateTime, nullable=True)
+    evento_agenda_id = Column(String, nullable=True)  # ID do evento no Google Agenda, se criado
     status = Column(Enum(StatusPedido), default=StatusPedido.recebido, nullable=False)
     criado_em = Column(DateTime, default=agora)
     atualizado_em = Column(DateTime, default=agora, onupdate=agora)

@@ -43,14 +43,16 @@ hora. `/novo` simula um cliente diferente (do zero); `/sair` encerra.
 - Cliente pode escolher **mais de um sabor numa mensagem só** (ex: "Nutella e Torta de Limão") — o bot pergunta tamanho e quantidade de cada um em sequência
 - Reconhecimento de sabor **ignora acentos** (ex: "limao" reconhece "Limão") — achado em teste real, ver `docs/08-registro-de-testes.md`
 - Cliente pode digitar `cancelar` a qualquer momento (cancela o pedido em andamento, ou o último pedido já confirmado, se ainda estiver em status que permite)
-- Cardápio em `app/cardapio.py` — preços reais definidos pela loja, fixos no código por enquanto (quando a Google Sheet do cardápio existir, só esse arquivo muda)
+- **Cardápio lido direto da Google Sheet** (`app/cardapio.py`) — a loja edita sabores/tamanhos/preços/disponibilidade na planilha, sem precisar de mim. Cache de `CARDAPIO_CACHE_MINUTOS` (`.env`) pra não bater na API a cada mensagem; se a planilha falhar, usa o último cardápio válido em cache e, na pior hipótese, um cardápio fixo de último recurso — a conversa nunca quebra por causa disso
 - **Antecedência mínima de 24h** (`app/agendamento.py`) — a loja trabalha por encomenda, então o bot exige pelo menos `ANTECEDENCIA_MINIMA_HORAS` (`.env`) entre o pedido e a entrega/retirada. Entende `hoje`, `amanhã` e datas explícitas (`25/12`) sempre com horário, com ou sem "h"/":" (`15h`, `15h30`, `20`) — parser feito à mão de propósito, não usa lib de NLP de datas (ver `docs/01-visao-geral.md`)
+- **Evento criado automaticamente no Google Agenda** (`app/agenda_service.py`) ao confirmar um pedido — data/horário, itens e endereço (se entrega). Se a Agenda não estiver configurada ou a chamada falhar, o pedido continua sendo salvo normalmente (não trava a conversa)
 - Banco SQLite criado automaticamente em `data/pipoca.db` na primeira execução
 - Checagem de horário de atendimento (8h–21h, configurável no `.env`)
 - Checagem de número admin (`ADMIN_PHONE_NUMBER` no `.env`) com comando `relatorio` (ainda um placeholder)
 
 ## Próximos passos (ver docs/04-guia-de-inicio.md)
+- Definir número admin e chave Pix real da loja no `.env`
+- Criar a conta Meta Business + WhatsApp Cloud API (travada temporariamente por conta pessoal nova)
 - Testar o webhook publicamente com um túnel temporário (ex: ngrok) durante o desenvolvimento
-- Ler o cardápio da Google Sheet (em vez do placeholder em `app/cardapio.py`)
-- Criar evento no Google Agenda ao confirmar pedido (já temos `data_hora_prevista` salva no pedido)
 - Gerar a planilha mensal sob o comando `relatorio`
+- Deploy no VPS
