@@ -1,8 +1,8 @@
-fastapi
-uvicorn[standard]
-sqlalchemy
-pydantic-settings
-httpx
-google-api-python-client
-google-auth
-openpyxl
+fastapi==0.141.1
+uvicorn[standard]==0.52.3
+sqlalchemy==2.0.52
+pydantic-settings==2.15.0
+httpx==0.28.1
+google-api-python-client==2.198.0
+google-auth==2.56.3
+openpyxl==3.1.5
