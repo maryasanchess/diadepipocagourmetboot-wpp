@@ -138,6 +138,7 @@ Mais detalhes em [`backend/README.md`](backend/README.md).
 | [`docs/06-sincronizar-dois-computadores.md`](docs/06-sincronizar-dois-computadores.md) | Trabalhar do notebook da empresa e de casa sem perder nada |
 | [`docs/07-como-testar-e-consultar.md`](docs/07-como-testar-e-consultar.md) | Como ver o código, ler a documentação e testar o bot no dia a dia |
 | [`docs/08-registro-de-testes.md`](docs/08-registro-de-testes.md) | Histórico de testes reais: o que foi testado, bugs encontrados e corrigidos |
+| [`docs/09-deploy-vps.md`](docs/09-deploy-vps.md) | Passo a passo do deploy no VPS, usando os arquivos prontos em `deploy/` |
 | [`Resumo-Projeto-PipocaBot.docx`](Resumo-Projeto-PipocaBot.docx) | Resumo não técnico, em Word, para compartilhar com quem não mexe com código |
 
 ## 🛠️ Stack
@@ -160,6 +161,7 @@ PipocaBot_WhatsApp/
 ├── README.md                        este arquivo
 ├── .env.example                     modelo de configuração (o .env real nunca é commitado)
 ├── docs/                            documentação completa, um tema por arquivo
+├── deploy/                          systemd + nginx prontos pro deploy no VPS (ver docs/09-deploy-vps.md)
 ├── Resumo-Projeto-PipocaBot.docx    resumo não técnico do projeto
 └── backend/
     ├── app/
@@ -203,6 +205,7 @@ PipocaBot_WhatsApp/
 - [ ] **Bloqueado:** envio de mensagens restrito pela Meta (erro 130497) até completar a Verificação da Empresa — ver `docs/04-guia-de-inicio.md`
 - [ ] Chave Pix real da loja
 - [ ] Regra e valor da taxa de entrega (infraestrutura pronta, só falta o valor)
+- [x] Arquivos de deploy prontos (`systemd` + `nginx`, ver `docs/09-deploy-vps.md`), só falta a conta do VPS existir
 - [ ] Conta no VPS (Hostinger) criada
 - [ ] Deploy no VPS
 

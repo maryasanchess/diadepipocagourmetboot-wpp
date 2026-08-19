@@ -1,0 +1,35 @@
+# Unidade systemd do PipocaBot.
+#
+# Instalar (como root, no VPS):
+#   cp deploy/pipocabot.service /etc/systemd/system/pipocabot.service
+#   systemctl daemon-reload
+#   systemctl enable --now pipocabot
+#
+# Ver logs:
+#   journalctl -u pipocabot -f
+#
+# Ajuste APP_DIR abaixo se o repositório não estiver em /opt/pipocabot.
+
+[Unit]
+Description=PipocaBot - backend FastAPI (atendimento via WhatsApp)
+After=network.target
+
+[Service]
+Type=simple
+User=pipocabot
+Group=pipocabot
+WorkingDirectory=/opt/pipocabot/backend
+ExecStart=/opt/pipocabot/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+# Isolamento básico do processo — não precisa de root nem acesso ao
+# resto do sistema pra rodar um backend web.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+
+[Install]
+WantedBy=multi-user.target
