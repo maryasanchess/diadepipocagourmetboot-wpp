@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, Request, Response
 from sqlalchemy.orm import Session
 
@@ -6,6 +8,7 @@ from .config import settings
 from .database import get_db
 from .dispatcher import processar_mensagem_recebida
 
+logger = logging.getLogger("pipocabot.webhook")
 router = APIRouter()
 
 
@@ -23,6 +26,14 @@ async def verificar_webhook(request: Request) -> Response:
 
 @router.post("/webhook")
 async def receber_mensagem(request: Request, db: Session = Depends(get_db)) -> dict:
+    """
+    Sempre responde 200 pra Meta, mesmo se alguma mensagem individual der
+    erro — a Meta reenvia (com retry automático) qualquer webhook que não
+    responda 2xx, e como um POST pode trazer várias mensagens de clientes
+    diferentes numa lista só, deixar uma exceção subir derrubaria a
+    resposta pra todo mundo do lote e ainda geraria reprocessamento
+    duplicado no reenvio.
+    """
     payload = await request.json()
 
     for entrada in payload.get("entry", []):
@@ -34,9 +45,13 @@ async def receber_mensagem(request: Request, db: Session = Depends(get_db)) -> d
                 if not telefone:
                     continue
 
-                resposta = processar_mensagem_recebida(db, telefone, texto)
-                await whatsapp.enviar_mensagem_texto(telefone, resposta.texto)
-                if resposta.anexo is not None:
-                    await whatsapp.enviar_documento(telefone, resposta.anexo)
+                try:
+                    resposta = processar_mensagem_recebida(db, telefone, texto)
+                    await whatsapp.enviar_mensagem_texto(telefone, resposta.texto)
+                    if resposta.anexo is not None:
+                        await whatsapp.enviar_documento(telefone, resposta.anexo)
+                except Exception:
+                    db.rollback()
+                    logger.exception("Falha ao processar mensagem de %s", telefone)
 
     return {"status": "ok"}
