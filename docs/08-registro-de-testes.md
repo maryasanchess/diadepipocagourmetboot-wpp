@@ -98,6 +98,88 @@ rodou sem erro. Depois de confirmado, `ok` respondeu com agradecimento;
 
 ---
 
+## Teste 3 — 2026-08-19: primeira mensagem real via WhatsApp Cloud API
+
+**Quem testou:** a loja, configurando o app de desenvolvedor na Meta pela primeira vez.
+
+**O que foi testado:** mandar uma mensagem de teste de verdade pelo número
+de teste do WhatsApp, e configurar o webhook pra receber mensagens.
+
+### 🐛 Achado 1 — mensagem de texto livre não chega na primeira tentativa
+A primeira mensagem enviada pela API (texto livre, sem template) não
+chegou no WhatsApp da loja, mesmo a API retornando sucesso (200 OK com
+`wamid` válido).
+
+**Causa:** regra do WhatsApp Business Platform — uma empresa não pode
+mandar mensagem de texto livre pra alguém que nunca iniciou conversa com
+ela. É preciso que o cliente mande a primeira mensagem (abre a "janela de
+24h") ou a empresa usa um modelo de mensagem pré-aprovado.
+
+**Correção:** não é bug do código — é assim que a plataforma funciona.
+Documentado aqui pra não gerar confusão de novo: **sempre que testar com
+um número novo, mande uma mensagem desse número pro número de teste
+primeiro.**
+
+### 🐛 Achado 2 — webhook.site não serve pra validar o webhook da Meta
+Tentamos usar [webhook.site](https://webhook.site) como um "espião"
+temporário pra ver o que a Meta estava enviando. A verificação do webhook
+falhou ("Não foi possível validar a URL de callback ou o token de
+verificação").
+
+**Causa:** a Meta exige que a URL do webhook responda ao desafio de
+verificação (`GET` com `hub.challenge`) ecoando esse valor de volta como
+corpo da resposta. O webhook.site é uma ferramenta de captura passiva —
+ele não faz esse eco automaticamente, então a validação sempre falha
+nele.
+
+**Correção:** usamos o próprio backend do projeto (que já implementa a
+verificação corretamente em `app/webhook.py`) exposto temporariamente via
+**ngrok**, em vez de uma ferramenta de terceiros. Funcionou de primeira —
+a Meta conseguiu validar e a requisição de verificação apareceu no log do
+backend.
+
+### 🐛 Achado 3 — app errado estava inscrito na conta do WhatsApp Business
+Mesmo com o webhook verificado e o campo `messages` assinado, nenhuma
+notificação chegava no backend.
+
+**Causa:** a URL do webhook fica configurada no nível do **app**, mas cada
+conta do WhatsApp Business (WABA) precisa estar "inscrita"
+(`subscribed_apps`) nesse app especificamente. Consultamos
+`GET /{WABA-ID}/subscribed_apps` e descobrimos que o app inscrito era o
+**"WA DevX Webhook Events 1P App"** — um app de demonstração interno da
+própria Meta, não o nosso "Diadê Pipocas Gourmet Bot".
+
+**Correção:** `POST /{WABA-ID}/subscribed_apps` (autenticado com o token
+do nosso app) inscreveu o app certo. Confirmado por nova consulta GET —
+os dois apps (o nosso e o de demonstração) ficaram listados.
+
+### 🐛 Achado 4 — causa real de nenhuma mensagem chegar: restrição de país
+Depois de corrigir a inscrição do app, o primeiro POST de status chegou
+no webhook — e revelou o motivo real de nenhuma mensagem ter sido
+entregue nas últimas horas:
+
+```
+"code": 130497,
+"title": "Business account is restricted from messaging users in this country."
+```
+
+**Causa provável:** a conta ainda não passou pela **Etapa 3. Verificação
+da empresa** (Business Verification) da Meta. Contas não verificadas
+costumam ficar bloqueadas de mandar mensagem pra alguns países,
+especialmente usando o número de teste americano (+1) pra alcançar
+números brasileiros.
+
+**Status:** em investigação — próximo passo é avaliar a verificação da
+empresa (pode exigir CNPJ).
+
+### ✅ Resultado do teste até aqui
+Webhook configurado, verificado e recebendo eventos reais (inclusive
+status de falha, o que finalmente revelou a causa raiz da não-entrega).
+Fluxo de diagnóstico ficou registrado aqui pra não repetir os mesmos
+passos às cegas numa próxima vez.
+
+---
+
 ## Como ler este registro no futuro
 Cada teste novo que encontrar um problema real deve virar uma entrada
 aqui: o que foi testado, o que quebrou, por que quebrou, e o que foi

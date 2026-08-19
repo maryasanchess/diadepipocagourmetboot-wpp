@@ -11,14 +11,43 @@ Você não precisa de nenhuma ferramenta paga para programar:
 ## Etapa 1 — Conta WhatsApp Business (Meta)
 1. ✅ Criar conta pessoal + portfólio empresarial em [business.facebook.com](https://business.facebook.com) — "Diadê Pipocas Gourmet".
 2. ✅ Superada a restrição inicial da conta (bloqueio de "conta muito nova" e depois uma restrição de publicidade/automação — resolvida via pedido de análise em 19/08/2026).
-3. ⬜ Criar o app de desenvolvedor em [developers.facebook.com](https://developers.facebook.com), associado ao portfólio "Diadê Pipocas Gourmet".
-4. ⬜ Adicionar o produto **WhatsApp** ao app (Plataforma do WhatsApp Business / Cloud API).
-5. ⬜ Anotar: `Phone Number ID`, `WhatsApp Business Account ID`, e gerar um `Token de acesso temporário` (depois trocamos por um permanente).
-6. ⬜ Confirmar a página de preços atual da Cloud API (ver `03-custos.md`).
+3. ✅ Criar o app de desenvolvedor em [developers.facebook.com](https://developers.facebook.com) ("Diadê Pipocas Gourmet Bot"), associado ao portfólio "Diadê Pipocas Gourmet".
+4. ✅ Adicionar o produto **WhatsApp** ao app e reivindicar o número de teste.
+5. ✅ `Phone Number ID`, `WhatsApp Business Account ID` e `Token de acesso temporário` salvos no `.env` local.
+6. ✅ Webhook configurado e verificado (ver nota abaixo sobre o túnel de teste).
+7. ✅ Campo `messages` assinado, e app inscrito na conta do WhatsApp Business (`subscribed_apps` — ver nota abaixo).
+8. 🚧 **Bloqueado:** mensagens de teste falham com o erro 130497 ("Business account is restricted from messaging users in this country"). Provável causa: falta completar a **Etapa 3. Verificação da empresa** dentro do fluxo da Meta (pode exigir CNPJ). Em investigação.
+9. ⬜ Confirmar a página de preços atual da Cloud API (ver `03-custos.md`).
 
 > Feita junto, tela por tela, mas **sem automação de navegador** — a Meta
 > restringiu a conta uma vez suspeitando de automação, então essa etapa
 > daqui pra frente é sempre a própria loja clicando/digitando.
+
+### Nota — testando o webhook localmente com ngrok
+Enquanto o backend não está no VPS (Etapa 8), usamos o **ngrok** (instalado
+localmente) pra criar uma URL pública temporária que aponta pro backend
+rodando no PC, só durante os testes. Essa URL muda toda vez que o ngrok é
+reiniciado — **não é a URL definitiva**, então não adianta anotar em lugar
+nenhum permanente. Quando o backend for pro VPS, trocamos pela URL real do
+domínio na configuração do webhook.
+
+Achado real durante o teste: mensagens de texto livre só são entregues
+depois que o cliente manda a primeira mensagem pro número (abre a "janela
+de 24h"); mandar via **webhook.site** pra depurar não funcionou porque ele
+não responde ao desafio de verificação do jeito que a Meta exige — por
+isso trocamos pro nosso próprio backend via túnel ngrok.
+
+Outro achado: verificar o webhook e assinar `messages` não é suficiente —
+a conta do WhatsApp Business precisa estar **inscrita no app**
+(`subscribed_apps`). Sem isso, os eventos vão pro app de demonstração
+padrão da Meta, não pro nosso. Ver `docs/08-registro-de-testes.md` (Teste
+3) para o diagnóstico completo, incluindo como usamos o próprio ngrok
+(`http://127.0.0.1:4040`) pra inspecionar o conteúdo das requisições e
+achar o erro 130497 escondido no status de entrega.
+
+**Diadê Pipocas Gourmet tem CNPJ**, então a Etapa 3 (Verificação da
+empresa) pode seguir o caminho normal, sem precisar de alternativa pra
+negócio informal.
 
 ## Etapa 2 — Google Cloud (para Calendar e Sheets) ✅ concluída
 1. ✅ Criar um projeto gratuito no [Google Cloud Console](https://console.cloud.google.com). Projeto: `diadepipoca-bot`.
