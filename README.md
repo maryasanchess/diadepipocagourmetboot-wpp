@@ -8,7 +8,7 @@
 ![python](https://img.shields.io/badge/backend-Python%20%2B%20FastAPI-3776AB?style=for-the-badge&logo=fastapi&logoColor=white)
 ![whatsapp](https://img.shields.io/badge/whatsapp-Cloud%20API-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)
 ![google](https://img.shields.io/badge/google-Calendar%20%2B%20Sheets-4285F4?style=for-the-badge&logo=google&logoColor=white)
-![privado](https://img.shields.io/badge/repo-privado-6B3F1D?style=for-the-badge&logo=github&logoColor=white)
+![publico](https://img.shields.io/badge/repo-p%C3%BAblico-2ea44f?style=for-the-badge&logo=github&logoColor=white)
 
 ![tests](https://img.shields.io/badge/testes-23%20passando-2ea44f?logo=pytest&logoColor=white)
 ![progresso](https://img.shields.io/badge/progresso-16%2F21%20etapas-C87F0A)
@@ -206,7 +206,7 @@ PipocaBot_WhatsApp/
 <summary>📋 Ver checklist completo (16/21)</summary>
 
 - [x] Estrutura do projeto e documentação inicial
-- [x] Repositório salvo com segurança no GitHub (privado)
+- [x] Repositório salvo com segurança no GitHub (código público, segredos num repositório privado separado)
 - [x] Esqueleto do backend rodando localmente (webhook, banco, horário de atendimento, checagem de admin)
 - [x] Fluxo de conversa completo (cardápio → tamanho → quantidade → entrega → pagamento → confirmação), testado de ponta a ponta com preços reais
 - [x] Múltiplos sabores numa mensagem só, com reconhecimento tolerante a acento
@@ -232,5 +232,5 @@ PipocaBot_WhatsApp/
 ---
 
 <div align="center">
-<sub>Projeto privado — Diadê Pipocas Gourmet. Não contém dados reais de clientes ou credenciais (ver <a href="docs/05-git-e-seguranca.md">docs/05-git-e-seguranca.md</a>).</sub>
+<sub>Projeto público — Diadê Pipocas Gourmet. Não contém dados reais de clientes ou credenciais (ver <a href="docs/05-git-e-seguranca.md">docs/05-git-e-seguranca.md</a>) — os segredos ficam num repositório privado separado.</sub>
 </div>
