@@ -36,26 +36,27 @@ apt install -y python3-venv python3-pip nginx certbot python3-certbot-nginx git
 ```
 
 ### 3. Trazer o código pro servidor
-O repositório de código é **público** — não precisa de autenticação pra
-clonar. O repositório de segredos é **privado** — esse vai pedir um
-Personal Access Token do GitHub (não a senha da conta).
+O repositório é **público** — não precisa de autenticação pra clonar.
 
 ```bash
 mkdir -p /opt/pipocabot
 chown pipocabot:pipocabot /opt/pipocabot
 su - pipocabot
 git clone https://github.com/maryasanchess/diadepipocagourmetboot-wpp.git /opt/pipocabot
-git clone https://github.com/maryasanchess/diadepipocagourmetboot-wpp---secrets.git /opt/pipocabot-secrets
 ```
 
 ### 4. Criar o `.env` de produção
-O `.env` **nunca** vai pro repositório público (ver `05-git-e-seguranca.md`)
-— ele vem do repositório privado de segredos, clonado no passo anterior.
+O `.env` **nunca** vai pro repositório (ver `05-git-e-seguranca.md`) —
+precisa ser criado direto no servidor, com os valores reais.
 
 ```bash
-cp /opt/pipocabot-secrets/.env /opt/pipocabot/.env
-cp /opt/pipocabot-secrets/backend/credentials/google_credentials.json /opt/pipocabot/backend/credentials/google_credentials.json
+cp /opt/pipocabot/.env.example /opt/pipocabot/.env
+nano /opt/pipocabot/.env
 ```
+
+Coloque também o arquivo `google_credentials.json` (credencial da conta
+de serviço do Google) em `/opt/pipocabot/backend/credentials/` — ele
+também nunca vai pelo Git.
 
 ### 5. Criar o ambiente virtual e instalar as dependências
 ```bash

@@ -206,7 +206,7 @@ PipocaBot_WhatsApp/
 <summary>📋 Ver checklist completo (16/21)</summary>
 
 - [x] Estrutura do projeto e documentação inicial
-- [x] Repositório salvo com segurança no GitHub (código público, segredos num repositório privado separado)
+- [x] Repositório salvo com segurança no GitHub, sem nenhum dado sensível commitado
 - [x] Esqueleto do backend rodando localmente (webhook, banco, horário de atendimento, checagem de admin)
 - [x] Fluxo de conversa completo (cardápio → tamanho → quantidade → entrega → pagamento → confirmação), testado de ponta a ponta com preços reais
 - [x] Múltiplos sabores numa mensagem só, com reconhecimento tolerante a acento
@@ -232,5 +232,5 @@ PipocaBot_WhatsApp/
 ---
 
 <div align="center">
-<sub>Projeto público — Diadê Pipocas Gourmet. Não contém dados reais de clientes ou credenciais (ver <a href="docs/05-git-e-seguranca.md">docs/05-git-e-seguranca.md</a>) — os segredos ficam num repositório privado separado.</sub>
+<sub>Projeto público — Diadê Pipocas Gourmet. Não contém dados reais de clientes ou credenciais (ver <a href="docs/05-git-e-seguranca.md">docs/05-git-e-seguranca.md</a>).</sub>
 </div>

@@ -28,21 +28,16 @@ esses itens. Mesmo assim, **sempre rode `git status` antes de commitar** e
 confira se não aparece nada da lista acima antes de dar `git add`.
 
 ## Repositório privado ou público?
-**Os dois, cada um com um papel diferente:**
-
-| Repositório | Visibilidade | O que tem |
-|---|---|---|
-| [`diadepipocagourmetboot-wpp`](https://github.com/maryasanchess/diadepipocagourmetboot-wpp) | 🌐 Público | Código e documentação — serve de portfólio, sem nenhum dado sensível |
-| [`diadepipocagourmetboot-wpp---secrets`](https://github.com/maryasanchess/diadepipocagourmetboot-wpp---secrets) | 🔒 Privado, sempre | `.env` e credenciais reais — token, chave Pix, IDs do Google |
-
-O código foi tornado público de propósito, depois de uma revisão
+Este repositório é **público**, de propósito, depois de uma revisão
 cuidadosa (histórico limpo de qualquer dado real — ver
 `08-registro-de-testes.md`) — não revela preços nem lógica de negócio
 sensível, só a implementação técnica. Se algum dia isso mudar (ex: lógica
 de desconto proprietária for adicionada), reavalie manter público.
 
-O repositório de segredos **nunca** pode virar público — ver
-`06-sincronizar-dois-computadores.md` pra como usar ele no dia a dia.
+Os segredos (`.env`, credenciais) nunca vão neste repositório, em nenhuma
+hipótese — ficam guardados separadamente, fora do Git público. Ver
+`06-sincronizar-dois-computadores.md` pra como configurar isso em cada
+máquina.
 
 ## Se algum segredo for commitado por engano
 Trocar a chave/token imediatamente (revogar o antigo na Meta/Google) — não
