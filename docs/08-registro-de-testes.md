@@ -180,6 +180,34 @@ passos às cegas numa próxima vez.
 
 ---
 
+## Teste 4 — 2026-08-24: Verificação da Empresa (Meta) — 1ª tentativa
+
+Enviado um documento pra comprovar que o telefone da empresa pertence ao
+CNPJ, como parte da Etapa 3 (Verificação da Empresa), que é o que
+desbloqueia o erro 130497 do Teste 3.
+
+### 🐛 Achado 5 — documento rejeitado: tipo não aceito
+A Meta recusou o documento com a mensagem "não foi possível verificar...
+usando as informações fornecidas" e apontou que o tipo de documento
+enviado pra comprovar o telefone não está na lista aceita.
+
+**Causa:** o documento enviado não é um dos tipos que a Meta aceita pra
+essa comprovação específica.
+
+**Tipos aceitos** (segundo a própria mensagem de erro), desde que
+mostrem a razão social **e** o telefone juntos no mesmo documento:
+- Contrato social / estatuto
+- Licença ou alvará de funcionamento
+- Extrato bancário ou resumo de transações
+- Carta do banco
+- Conta de serviço público (água, gás, luz ou telefone)
+
+**Status:** pendente — próximo passo é reenviar com um documento de tipo
+aceito (ex: conta de telefone ou extrato bancário da conta PJ) que
+mostre o número exatamente como cadastrado na Meta.
+
+---
+
 ## Como ler este registro no futuro
 Cada teste novo que encontrar um problema real deve virar uma entrada
 aqui: o que foi testado, o que quebrou, por que quebrou, e o que foi
