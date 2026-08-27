@@ -208,6 +208,40 @@ mostre o número exatamente como cadastrado na Meta.
 
 ---
 
+## Teste 5 — 2026-08-24: testes automatizados criando eventos reais na Agenda
+
+Um pedido de teste apareceu na Google Agenda real da loja (endereço
+"Rua Teste, 1", cliente fake) — mas ninguém tinha feito um pedido de
+verdade. Investigando, a origem era bem maior do que um teste isolado.
+
+### 🐛 Achado 6 — suíte de testes e chat_local.py sempre bateram na API real
+`chat_local.py` só evita o envio real pelo WhatsApp — todo o resto do
+fluxo (planilha, banco, **Google Agenda**) roda de verdade, inclusive
+quando usado só pra testar a conversa. Pior: a suíte automatizada
+(`pytest`) roda com o `.env` real (mesmo arquivo usado em produção) e
+**nada** impedia `agenda_service.criar_evento_pedido` de chamar a API
+de verdade durante os testes.
+
+**Causa:** nenhuma das duas ferramentas de teste tinha uma forma de
+desligar só a escrita na Google Agenda, mantendo o resto do fluxo real
+(cardápio, banco).
+
+**Evidência:** encontrados **80 eventos de teste** acumulados na agenda
+real (endereços "Rua Teste, 1" e "Rua das Flores, 123" — literalmente
+os valores usados nos testes automatizados em `test_conversation.py`),
+de várias rodadas em dias diferentes. Todos apagados.
+
+**Correção:** nova flag `settings.modo_teste_local` (`app/config.py`),
+ligada automaticamente pelo `chat_local.py` (via variável de ambiente,
+antes de importar o resto do app) e por um fixture `autouse` em
+`tests/conftest.py` (vale pra toda a suíte, sem precisar lembrar de
+nada). Quando ativa, `agenda_service.criar_evento_pedido` não chama a
+API — só avisa no terminal o que seria criado, e devolve um ID fake
+(`"teste-local"`). Testado rodando a suíte inteira e conferindo por API
+que a agenda real continuou com 0 eventos novos.
+
+---
+
 ## Como ler este registro no futuro
 Cada teste novo que encontrar um problema real deve virar uma entrada
 aqui: o que foi testado, o que quebrou, por que quebrou, e o que foi

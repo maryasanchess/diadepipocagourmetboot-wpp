@@ -46,10 +46,11 @@ cd backend
 .venv\Scripts\python.exe -m pytest tests/ -v
 ```
 
-23 testes cobrindo o fluxo de pedido completo, múltiplos sabores,
-cancelamento, antecedência mínima, comandos admin, o relatório mensal e
-a resiliência do webhook (erro em uma mensagem do lote, ou corpo da
-requisição inválido, não derrubam o endpoint). Cada bug real encontrado em teste manual (ver
+25 testes cobrindo o fluxo de pedido completo, múltiplos sabores,
+cancelamento, antecedência mínima, comandos admin, o relatório mensal, a
+resiliência do webhook (erro em uma mensagem do lote, ou corpo da
+requisição inválido, não derrubam o endpoint) e o modo de teste local
+(pedido de teste não cria evento na Google Agenda real). Cada bug real encontrado em teste manual (ver
 `docs/08-registro-de-testes.md`) virou um teste automatizado aqui, pra
 nunca mais precisar redescobrir o mesmo problema. Rodam em banco SQLite
 em memória — não tocam no banco de desenvolvimento nem geram arquivos

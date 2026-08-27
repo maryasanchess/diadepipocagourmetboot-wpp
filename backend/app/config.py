@@ -33,6 +33,10 @@ class Settings(BaseSettings):
 
     app_secret_key: str = ""
 
+    # Ligado automaticamente pelo chat_local.py — nunca em produção. Evita
+    # que rodadas de teste criem eventos de verdade na Google Agenda real.
+    modo_teste_local: bool = False
+
     model_config = SettingsConfigDict(
         env_file=str(PROJECT_ROOT / ".env"),
         env_file_encoding="utf-8",

@@ -15,10 +15,15 @@ Comandos especiais durante o chat:
     /sair    -> encerra o chat
 """
 
+import os
 import sys
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stdin.reconfigure(encoding="utf-8", errors="replace")
+
+# Precisa vir antes de importar app.config (direto ou indireto) — evita que
+# pedidos de teste criem eventos de verdade na Google Agenda real.
+os.environ["MODO_TESTE_LOCAL"] = "true"
 
 from app.database import Base, SessionLocal, engine
 from app import models  # noqa: F401 garante que os modelos existam
@@ -38,6 +43,7 @@ def main() -> None:
     print("Chat local do PipocaBot (Ctrl+C ou /sair para encerrar)")
     print(f"Simulando o cliente: {telefone}")
     print("Digite /novo para simular um cliente diferente do zero.")
+    print("Modo teste local: pedidos confirmados NÃO criam evento na Agenda real.")
     print("=" * 60)
 
     while True:

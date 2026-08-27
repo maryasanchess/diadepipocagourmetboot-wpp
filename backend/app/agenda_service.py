@@ -46,6 +46,10 @@ def criar_evento_pedido(pedido: models.Pedido) -> str | None:
     if pedido.tipo_entrega == "entrega" and pedido.endereco:
         evento["location"] = pedido.endereco
 
+    if settings.modo_teste_local:
+        print(f"\n[Modo teste local: evento da Agenda NÃO foi criado de verdade — seria '{evento['summary']}']")
+        return "teste-local"
+
     try:
         servico = obter_servico_calendar()
         resultado = (
